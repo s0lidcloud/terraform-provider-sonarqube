@@ -204,6 +204,10 @@ func resourceSonarqubeProjectRead(d *schema.ResourceData, m interface{}) error {
 		"resourceSonarqubeProjectRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()

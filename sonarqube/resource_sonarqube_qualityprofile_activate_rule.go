@@ -150,6 +150,10 @@ func resourceSonarqubeQualityProfileRuleRead(d *schema.ResourceData, m interface
 	)
 
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -165,7 +169,8 @@ func resourceSonarqubeQualityProfileRuleRead(d *schema.ResourceData, m interface
 		return nil
 	}
 
-	return fmt.Errorf("resourceSonarqubeQualityProfileRuleRead: Failed to find project: %+v", d.Id())
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeQualityProfileRuleImporter(d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {

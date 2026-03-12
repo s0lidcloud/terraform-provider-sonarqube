@@ -110,6 +110,10 @@ func resourceSonarqubeQualityProfileProjectAssociationRead(d *schema.ResourceDat
 		"resourceSonarqubeQualityProfileProjectAssociationRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -152,6 +156,10 @@ func resourceSonarqubeQualityProfileProjectAssociationRead(d *schema.ResourceDat
 		"resourceSonarqubeQualityProfileProjectAssociationRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -172,8 +180,8 @@ func resourceSonarqubeQualityProfileProjectAssociationRead(d *schema.ResourceDat
 		}
 	}
 
-	return fmt.Errorf("resourceSonarqubeQualityProfileProjectAssociationRead: Failed to find project association: %+v", d.Id())
-
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeQualityProfileProjectAssociationDelete(d *schema.ResourceData, m interface{}) error {

@@ -47,9 +47,6 @@ func resourceSonarqubeGitlabBinding() *schema.Resource {
 }
 
 func checkGitlabBindingSupport(conf *ProviderConfiguration) error {
-	if strings.ToLower(conf.sonarQubeEdition) == "community" {
-		return fmt.Errorf("GitLab Bindings are not supported in the Community edition of SonarQube. You are using: SonarQube %s version %s", conf.sonarQubeEdition, conf.sonarQubeVersion)
-	}
 	return nil
 }
 
@@ -106,6 +103,10 @@ func resourceSonarqubeGitlabBindingRead(d *schema.ResourceData, m interface{}) e
 		"resourceSonarqubeGitlabBindingRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -125,7 +126,9 @@ func resourceSonarqubeGitlabBindingRead(d *schema.ResourceData, m interface{}) e
 
 		return nil
 	}
-	return fmt.Errorf("resourceSonarqubeGitlabBindingRead: Failed to find gitlab binding: %+v", d.Id())
+
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeGitlabBindingDelete(d *schema.ResourceData, m interface{}) error {

@@ -64,9 +64,6 @@ func resourceSonarqubeGithubBinding() *schema.Resource {
 }
 
 func checkGithubBindingSupport(conf *ProviderConfiguration) error {
-	if strings.ToLower(conf.sonarQubeEdition) == "community" {
-		return fmt.Errorf("GitHub Bindings are not supported in the Community edition of SonarQube. You are using: SonaQube %s version %s", conf.sonarQubeEdition, conf.sonarQubeVersion)
-	}
 	return nil
 }
 
@@ -124,6 +121,10 @@ func resourceSonarqubeGithubBindingRead(d *schema.ResourceData, m interface{}) e
 		"resourceSonarqubeGithubBindingRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -144,7 +145,9 @@ func resourceSonarqubeGithubBindingRead(d *schema.ResourceData, m interface{}) e
 
 		return nil
 	}
-	return fmt.Errorf("resourceSonarqubeGithubBindingRead: Failed to find github binding: %+v", d.Id())
+
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeGithubBindingDelete(d *schema.ResourceData, m interface{}) error {

@@ -124,6 +124,10 @@ func resourceSonarqubeWebhookRead(d *schema.ResourceData, m interface{}) error {
 		"resourceWebhookRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return fmt.Errorf("resourceWebhookRead: Failed to call %s: %+v", sonarQubeURL.Path, err)
 	}
 	defer resp.Body.Close()
@@ -152,7 +156,8 @@ func resourceSonarqubeWebhookRead(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
-	return fmt.Errorf("resourceWebhookRead: Failed to find webhook with key %s", d.Id())
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeWebhookUpdate(d *schema.ResourceData, m interface{}) error {

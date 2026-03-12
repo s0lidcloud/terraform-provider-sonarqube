@@ -141,6 +141,10 @@ func resourceSonarqubeUserRead(d *schema.ResourceData, m interface{}) error {
 		"resourceSonarqubeUserRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return fmt.Errorf("error reading Sonarqube user: %+v", err)
 	}
 	defer resp.Body.Close()
@@ -164,7 +168,8 @@ func resourceSonarqubeUserRead(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
-	return fmt.Errorf("resourceSonarqubeUserRead: Failed to find user: %+v", d.Id())
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeUserUpdate(d *schema.ResourceData, m interface{}) error {

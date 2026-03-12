@@ -90,6 +90,10 @@ func resourceSonarqubeAlmGitlabRead(d *schema.ResourceData, m interface{}) error
 		"resourceSonarqubeAlmGitlabRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -110,8 +114,9 @@ func resourceSonarqubeAlmGitlabRead(d *schema.ResourceData, m interface{}) error
 			return nil
 		}
 	}
-	return fmt.Errorf("resourceSonarqubeGitlabBindingRead: Failed to find gitlab binding: %+v", d.Id())
 
+	d.SetId("")
+	return nil
 }
 func resourceSonarqubeAlmGitlabUpdate(d *schema.ResourceData, m interface{}) error {
 	sonarQubeURL := m.(*ProviderConfiguration).sonarQubeURL

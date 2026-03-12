@@ -175,6 +175,10 @@ func resourceSonarqubeUserTokenRead(d *schema.ResourceData, m interface{}) error
 		"resourceSonarqubeUserTokenRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return fmt.Errorf("error reading Sonarqube user tokens: %+v", err)
 	}
 	defer resp.Body.Close()
@@ -205,7 +209,8 @@ func resourceSonarqubeUserTokenRead(d *schema.ResourceData, m interface{}) error
 		}
 	}
 
-	return fmt.Errorf("resourceSonarqubeUserTokenCreate: Failed to find user token: %+v", d.Id())
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeUserTokenDelete(d *schema.ResourceData, m interface{}) error {

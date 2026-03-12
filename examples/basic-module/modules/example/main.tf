@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     sonarqube = {
-      source  = "jdamata/sonarqube"
+      source  = "s0lidcloud/sonarqube"
     }
   }
 }

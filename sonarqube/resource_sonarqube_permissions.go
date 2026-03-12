@@ -193,6 +193,10 @@ func resourceSonarqubePermissionsRead(d *schema.ResourceData, m interface{}) err
 			"resourceSonarqubePermissionsRead",
 		)
 		if err != nil {
+			if resp.StatusCode == http.StatusNotFound {
+				d.SetId("")
+				return nil
+			}
 			return fmt.Errorf("error reading Sonarqube permissions: %+v", err)
 		}
 		defer resp.Body.Close()
@@ -237,6 +241,10 @@ func resourceSonarqubePermissionsRead(d *schema.ResourceData, m interface{}) err
 			"resourceSonarqubePermissionsRead",
 		)
 		if err != nil {
+			if resp.StatusCode == http.StatusNotFound {
+				d.SetId("")
+				return nil
+			}
 			return fmt.Errorf("error reading Sonarqube permissions: %+v", err)
 		}
 		defer resp.Body.Close()
@@ -259,7 +267,8 @@ func resourceSonarqubePermissionsRead(d *schema.ResourceData, m interface{}) err
 		}
 	}
 
-	return fmt.Errorf("resourceSonarqubePermissionsRead: Unable to find group permissions for group: %+v", d.Id())
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubePermissionsDelete(d *schema.ResourceData, m interface{}) error {

@@ -153,6 +153,10 @@ func resourceSonarqubeNewCodePeriodsRead(d *schema.ResourceData, m interface{}) 
 		"resourceSonarqubeNewCodePeriodsRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -176,7 +180,8 @@ func resourceSonarqubeNewCodePeriodsRead(d *schema.ResourceData, m interface{}) 
 		return nil
 	}
 
-	return fmt.Errorf("resourceSonarqubeNewCodePeriodsRead: Failed to find new code period: %+v", d.Id())
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeNewCodePeriodsDelete(d *schema.ResourceData, m interface{}) error {

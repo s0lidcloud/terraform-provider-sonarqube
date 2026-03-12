@@ -94,6 +94,10 @@ func resourceSonarqubeQualityGateProjectAssociationRead(d *schema.ResourceData, 
 		"resourceSonarqubeQualityGateProjectAssociationRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -103,6 +107,11 @@ func resourceSonarqubeQualityGateProjectAssociationRead(d *schema.ResourceData, 
 	err = json.NewDecoder(resp.Body).Decode(&qualityGateAssociationReadResponse)
 	if err != nil {
 		return fmt.Errorf("resourceSonarqubeQualityGateProjectAssociationRead: Failed to decode json into struct: %+v", err)
+	}
+
+	if qualityGateAssociationReadResponse.QualityGate.Name != idSlice[0] {
+		d.SetId("")
+		return nil
 	}
 
 	d.Set("projectkey", idSlice[1])

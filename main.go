@@ -4,7 +4,7 @@ import (
 	"flag"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/jdamata/terraform-provider-sonarqube/sonarqube"
+	"github.com/s0lidcloud/terraform-provider-sonarqube/sonarqube"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 	plugin.Serve(
 		&plugin.ServeOpts{
 			Debug:        debug,
-			ProviderAddr: "registry.terraform.io/jdamata/sonarqube",
+			ProviderAddr: "registry.terraform.io/s0lidcloud/sonarqube",
 			ProviderFunc: sonarqube.Provider,
 		},
 	)

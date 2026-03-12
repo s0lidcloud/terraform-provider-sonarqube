@@ -104,6 +104,10 @@ func resourceSonarqubeGroupRead(d *schema.ResourceData, m interface{}) error {
 		"resourceSonarqubeGroupRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return fmt.Errorf("error reading Sonarqube group: %+v", err)
 	}
 	defer resp.Body.Close()
@@ -136,9 +140,7 @@ func resourceSonarqubeGroupRead(d *schema.ResourceData, m interface{}) error {
 
 	if !readSuccess {
 		// Group not found
-		if _, ok := d.GetOk("id"); ok {
-			d.SetId("")
-		}
+		d.SetId("")
 	}
 
 	return nil

@@ -146,10 +146,6 @@ func resourceSonarqubePortfolio() *schema.Resource {
 }
 
 func checkPortfolioSupport(conf *ProviderConfiguration) error {
-	edition := strings.ToLower(conf.sonarQubeEdition)
-	if edition != "enterprise" && edition != "data center" {
-		return fmt.Errorf("portfolios are only supported in the Enterprise and Datacenter editions of SonarQube. You are using: SonarQube %s version %s", conf.sonarQubeEdition, conf.sonarQubeVersion)
-	}
 	return nil
 }
 
@@ -222,7 +218,7 @@ func portfolioSetSelectionMode(d *schema.ResourceData, m interface{}, sonarQubeU
 			"tags":      []string{tagsCSV},
 		}
 
-		// SonarQube handles "" like it actually is a name of a branch, see PR for reference: https://github.com/jdamata/terraform-provider-sonarqube/pull/150
+		// SonarQube handles "" like it actually is a name of a branch, see PR for reference: https://github.com/s0lidcloud/terraform-provider-sonarqube/pull/150
 		branch := d.Get("branch").(string)
 		if len(branch) > 0 {
 			urlParameters.Add("branch", branch)
@@ -238,7 +234,7 @@ func portfolioSetSelectionMode(d *schema.ResourceData, m interface{}, sonarQubeU
 			"regexp":    []string{d.Get("regexp").(string)},
 		}
 
-		// SonarQube handles "" like it actually is a name of a branch, see PR for reference: https://github.com/jdamata/terraform-provider-sonarqube/pull/150
+		// SonarQube handles "" like it actually is a name of a branch, see PR for reference: https://github.com/s0lidcloud/terraform-provider-sonarqube/pull/150
 		branch := d.Get("branch").(string)
 		if len(branch) > 0 {
 			urlParameters.Add("branch", branch)
@@ -253,7 +249,7 @@ func portfolioSetSelectionMode(d *schema.ResourceData, m interface{}, sonarQubeU
 			"portfolio": []string{d.Get("key").(string)},
 		}
 
-		// SonarQube handles "" like it actually is a name of a branch, see PR for reference: https://github.com/jdamata/terraform-provider-sonarqube/pull/150
+		// SonarQube handles "" like it actually is a name of a branch, see PR for reference: https://github.com/s0lidcloud/terraform-provider-sonarqube/pull/150
 		branch := d.Get("branch").(string)
 		if len(branch) > 0 {
 			urlParameters.Add("branch", branch)
@@ -347,6 +343,10 @@ func resourceSonarqubePortfolioRead(d *schema.ResourceData, m interface{}) error
 	portfolioReadResponse, err := readPortfolioFromApi(d, m)
 	if err != nil {
 		return err
+	}
+	if portfolioReadResponse == nil {
+		d.SetId("")
+		return nil
 	}
 	updateResourceDataFromPortfolioReadResponse(d, portfolioReadResponse)
 	return nil
@@ -465,6 +465,9 @@ func readPortfolioFromApi(d *schema.ResourceData, m interface{}) (*Portfolio, er
 		"readPortfolioFromApi",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			return nil, nil
+		}
 		return nil, fmt.Errorf("readPortfolioFromApi: Failed to call api/views/show: %+v", err)
 	}
 	defer resp.Body.Close()

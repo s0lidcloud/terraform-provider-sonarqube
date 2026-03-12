@@ -183,6 +183,10 @@ func resourceSonarqubeQualityGateRead(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
+	if qualityGateReadResponse == nil {
+		d.SetId("")
+		return nil
+	}
 	updateResourceDataFromQualityGateReadResponse(d, qualityGateReadResponse)
 	// Api returns if true if set as default is available. when is_default=true setAsDefault=false so is_default=true
 	d.Set("is_default", !qualityGateReadResponse.Actions.SetAsDefault)
@@ -335,6 +339,9 @@ func readQualityGateFromApi(d *schema.ResourceData, m interface{}) (*GetQualityG
 		"readQualityGateFromApi",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			return nil, nil
+		}
 		return nil, fmt.Errorf("readQualityGateFromApi: Failed to call api/qualitygates/show: %+v", err)
 	}
 	defer resp.Body.Close()

@@ -98,6 +98,10 @@ func resourceSonarqubeGroupMemberRead(d *schema.ResourceData, m interface{}) err
 		"resourceSonarqubeGroupMemberRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return fmt.Errorf("error reading Sonarqube members of group '%s': %w", d.Get("name").(string), err)
 	}
 	defer resp.Body.Close()

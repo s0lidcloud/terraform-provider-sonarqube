@@ -91,6 +91,10 @@ func resourceSonarqubePluginRead(d *schema.ResourceData, m interface{}) error {
 		"resourceSonarqubePluginRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -112,7 +116,8 @@ func resourceSonarqubePluginRead(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
-	return fmt.Errorf("resourceSonarqubePluginRead: Failed to find plugin: %+v", d.Id())
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubePluginDelete(d *schema.ResourceData, m interface{}) error {

@@ -94,6 +94,10 @@ func resourceSonarqubeProjectMainBranchRead(d *schema.ResourceData, m interface{
 		"resourceSonarqubeProjectMainBranchRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -112,8 +116,9 @@ func resourceSonarqubeProjectMainBranchRead(d *schema.ResourceData, m interface{
 			return nil
 		}
 	}
-	return fmt.Errorf("resourceSonarqubeProjectMainBranchRead: Failed to find project main branch: %+v", d.Id())
 
+	d.SetId("")
+	return nil
 }
 
 // TODO make the delete function read the default branch name of the sonarQube instance instead of assuming

@@ -160,6 +160,10 @@ func resourceSonarqubeQualityProfileRead(d *schema.ResourceData, m interface{}) 
 		"resourceSonarqubeQualityProfileRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -182,7 +186,8 @@ func resourceSonarqubeQualityProfileRead(d *schema.ResourceData, m interface{}) 
 		}
 	}
 
-	return fmt.Errorf("resourceSonarqubeQualityProfileRead: Failed to find project: %+v", d.Id())
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeQualityProfileDelete(d *schema.ResourceData, m interface{}) error {

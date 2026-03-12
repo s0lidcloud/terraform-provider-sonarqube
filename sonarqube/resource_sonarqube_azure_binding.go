@@ -118,6 +118,10 @@ func resourceSonarqubeAzureBindingRead(d *schema.ResourceData, m interface{}) er
 		"resourceSonarqubeAzureBindingRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -140,7 +144,9 @@ func resourceSonarqubeAzureBindingRead(d *schema.ResourceData, m interface{}) er
 
 		return nil
 	}
-	return fmt.Errorf("resourceSonarqubeAzureBindingRead: Failed to find azure binding: %+v", d.Id())
+
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeAzureBindingDelete(d *schema.ResourceData, m interface{}) error {

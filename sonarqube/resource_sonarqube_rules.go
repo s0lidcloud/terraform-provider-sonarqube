@@ -201,6 +201,10 @@ func resourceSonarqubeRuleRead(d *schema.ResourceData, m interface{}) error {
 		"resourceSonarqubeRuleRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 	defer resp.Body.Close()
@@ -223,7 +227,9 @@ func resourceSonarqubeRuleRead(d *schema.ResourceData, m interface{}) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("resourceSonarqubeRuleRead: Failed to find project: %+v", d.Id())
+
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeRuleDelete(d *schema.ResourceData, m interface{}) error {

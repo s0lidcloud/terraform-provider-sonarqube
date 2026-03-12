@@ -27,9 +27,9 @@ Start the process using this configuration and then follow the instructions prov
 ```shell
 Provider started. To attach Terraform CLI, set the TF_REATTACH_PROVIDERS environment variable with the following:
 
-	Command Prompt:	set "TF_REATTACH_PROVIDERS={"registry.terraform.io/jdamata/sonarqube":{"Protocol":"grpc","ProtocolVersion":5,"Pid":2748,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:56560"}}}"
+	Command Prompt:	set "TF_REATTACH_PROVIDERS={"registry.terraform.io/s0lidcloud/sonarqube":{"Protocol":"grpc","ProtocolVersion":5,"Pid":2748,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:56560"}}}"
 
-	PowerShell:	$env:TF_REATTACH_PROVIDERS='{"registry.terraform.io/jdamata/sonarqube":{"Protocol":"grpc","ProtocolVersion":5,"Pid":2748,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:56560"}}}'
+	PowerShell:	$env:TF_REATTACH_PROVIDERS='{"registry.terraform.io/s0lidcloud/sonarqube":{"Protocol":"grpc","ProtocolVersion":5,"Pid":2748,"Test":true,"Addr":{"Network":"tcp","String":"127.0.0.1:56560"}}}'
 ```
 
 ### Delve CLI

@@ -122,6 +122,10 @@ func resourceSonarqubeQualityGateUsergroupAssociationRead(d *schema.ResourceData
 		"resourceSonarqubeQualityGateUsergroupAssociationRead",
 	)
 	if err != nil {
+		if resp.StatusCode == http.StatusNotFound {
+			d.SetId("")
+			return nil
+		}
 		return fmt.Errorf("resourceSonarqubeQualityGateUsergroupAssociationRead: Failed to call quality gate usergroup association api: %+v", err)
 	}
 	defer resp.Body.Close()
@@ -151,7 +155,9 @@ func resourceSonarqubeQualityGateUsergroupAssociationRead(d *schema.ResourceData
 			}
 		}
 	}
-	return fmt.Errorf("resourceSonarqubeQualityGateUsergroupAssociationRead: Failed to call quality gate usergroup association api: %+v", err)
+
+	d.SetId("")
+	return nil
 }
 
 func resourceSonarqubeQualityGateUsergroupAssociationDelete(d *schema.ResourceData, m interface{}) error {
