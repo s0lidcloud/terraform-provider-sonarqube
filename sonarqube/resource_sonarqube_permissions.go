@@ -143,7 +143,7 @@ func resourceSonarqubePermissionsCreate(d *schema.ResourceData, m interface{}) e
 		if err != nil {
 			return fmt.Errorf("error creating Sonarqube permission: %+v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 	}
 
 	// generate a unique ID
@@ -199,7 +199,7 @@ func resourceSonarqubePermissionsRead(d *schema.ResourceData, m interface{}) err
 			}
 			return fmt.Errorf("error reading Sonarqube permissions: %+v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 
 		// Decode response into struct
 		users := GetUser{}
@@ -212,8 +212,8 @@ func resourceSonarqubePermissionsRead(d *schema.ResourceData, m interface{}) err
 		loginName := d.Get("login_name").(string)
 		for _, value := range users.Users {
 			if strings.EqualFold(value.Login, loginName) {
-				d.Set("login_name", value.Login)
-				d.Set("permissions", flattenPermissions(&value.Permissions))
+				_ = d.Set("login_name", value.Login)
+				_ = d.Set("permissions", flattenPermissions(&value.Permissions))
 				return nil
 			}
 		}
@@ -247,7 +247,7 @@ func resourceSonarqubePermissionsRead(d *schema.ResourceData, m interface{}) err
 			}
 			return fmt.Errorf("error reading Sonarqube permissions: %+v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 
 		// Decode response into struct
 		groups := GetGroupPermissions{}
@@ -260,8 +260,8 @@ func resourceSonarqubePermissionsRead(d *schema.ResourceData, m interface{}) err
 		groupName := d.Get("group_name").(string)
 		for _, value := range groups.Groups {
 			if strings.EqualFold(value.Name, groupName) {
-				d.Set("group_name", value.Name)
-				d.Set("permissions", flattenPermissions(&value.Permissions))
+				_ = d.Set("group_name", value.Name)
+				_ = d.Set("permissions", flattenPermissions(&value.Permissions))
 				return nil
 			}
 		}
@@ -336,7 +336,7 @@ func resourceSonarqubePermissionsDelete(d *schema.ResourceData, m interface{}) e
 		if err != nil {
 			return fmt.Errorf("error creating Sonarqube permission: %+v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 	}
 
 	return nil

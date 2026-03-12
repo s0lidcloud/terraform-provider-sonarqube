@@ -69,7 +69,7 @@ func resourceSonarqubeQualityGateProjectAssociationCreate(d *schema.ResourceData
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	id := fmt.Sprintf("%v/%v", d.Get("gatename").(string), d.Get("projectkey").(string))
 	d.SetId(id)
@@ -100,7 +100,7 @@ func resourceSonarqubeQualityGateProjectAssociationRead(d *schema.ResourceData, 
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	qualityGateAssociationReadResponse := GetQualityGateAssociation{}
@@ -114,8 +114,8 @@ func resourceSonarqubeQualityGateProjectAssociationRead(d *schema.ResourceData, 
 		return nil
 	}
 
-	d.Set("projectkey", idSlice[1])
-	d.Set("gatename", qualityGateAssociationReadResponse.QualityGate.Name)
+	_ = d.Set("projectkey", idSlice[1])
+	_ = d.Set("gatename", qualityGateAssociationReadResponse.QualityGate.Name)
 	return nil
 }
 
@@ -138,7 +138,7 @@ func resourceSonarqubeQualityGateProjectAssociationDelete(d *schema.ResourceData
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

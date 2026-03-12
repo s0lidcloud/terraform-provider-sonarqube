@@ -93,7 +93,7 @@ func resourceSonarqubeAlmGithubCreate(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	d.SetId(d.Get("key").(string))
 
@@ -119,7 +119,7 @@ func resourceSonarqubeAlmGithubRead(d *schema.ResourceData, m interface{}) error
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	AlmGithubReadResponse := GetAlmGithub{}
@@ -130,10 +130,10 @@ func resourceSonarqubeAlmGithubRead(d *schema.ResourceData, m interface{}) error
 	// Loop over all GitHub instances to see if the Alm instance exists.
 	for _, value := range AlmGithubReadResponse.Github {
 		if d.Id() == value.Key {
-			d.Set("key", value.Key)
-			d.Set("url", value.URL)
-			d.Set("app_id", value.AppID)
-			d.Set("client_id", value.ClientID)
+			_ = d.Set("key", value.Key)
+			_ = d.Set("url", value.URL)
+			_ = d.Set("app_id", value.AppID)
+			_ = d.Set("client_id", value.ClientID)
 			return nil
 		}
 	}
@@ -165,7 +165,7 @@ func resourceSonarqubeAlmGithubUpdate(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return resourceSonarqubeAlmGithubRead(d, m)
 }
@@ -187,7 +187,7 @@ func resourceSonarqubeAlmGithubDelete(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

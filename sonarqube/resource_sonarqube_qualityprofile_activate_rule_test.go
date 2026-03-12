@@ -20,25 +20,25 @@ func testSweeepSonarqibeQualityprofileActivateRuleSweeper(r string) error {
 
 func testAccSonarqubeQualityprofileActivateRuleBasicConfig(rnd string, name string, key string, severity string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_qualityprofile" "%[1]s" {
-			name     = "%[2]s"
-			language = "xml"
-		}
-
-		resource "sonarqube_rule" "%[1]s" {
-			custom_key = "%[3]s"
-			markdown_description = "My rule"
-			name = "%[3]s" 
-			severity = "%[4]s"
-			template_key = "xml:XPathCheck"
-			type = "VULNERABILITY"
-		}
-
-		resource "sonarqube_qualityprofile_activate_rule" "%[1]s" {
-			key = sonarqube_qualityprofile.%[1]s.key
-			rule = sonarqube_rule.%[1]s.id
-			severity = "%[4]s"
-		}`, rnd, name, key, severity)
+	resource "sonarqube_qualityprofile" "%[1]s" {
+	name     = "%[2]s"
+	language = "xml"
+	}
+	
+	resource "sonarqube_rule" "%[1]s" {
+	custom_key = "%[3]s"
+	markdown_description = "My rule"
+	name = "%[3]s" 
+	severity = "%[4]s"
+	template_key = "xml:XPathCheck"
+	type = "VULNERABILITY"
+	}
+	
+	resource "sonarqube_qualityprofile_activate_rule" "%[1]s" {
+	key = sonarqube_qualityprofile.%[1]s.key
+	rule = sonarqube_rule.%[1]s.id
+	severity = "%[4]s"
+	}`, rnd, name, key, severity)
 }
 
 func TestAccSonarqubeQualityprofileActivateRuleBasic(t *testing.T) {

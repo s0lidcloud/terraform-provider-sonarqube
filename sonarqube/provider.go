@@ -214,7 +214,7 @@ func sonarqubeSystemInfo(client *retryablehttp.Client, sonarqube url.URL) (strin
 	if err != nil {
 		return "", "", fmt.Errorf("cannot get sonarqube version/edition. Please configure installed_version and installed_edition: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Read in the response
 	responseData, err := ioutil.ReadAll(resp.Body)

@@ -93,7 +93,7 @@ func resourceSonarqubeGithubBindingCreate(d *schema.ResourceData, m interface{})
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	id := fmt.Sprintf("%v/%v", d.Get("project").(string), d.Get("repository").(string))
 	d.SetId(id)
@@ -127,7 +127,7 @@ func resourceSonarqubeGithubBindingRead(d *schema.ResourceData, m interface{}) e
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	BindingReadResponse := GetBinding{}
@@ -137,11 +137,11 @@ func resourceSonarqubeGithubBindingRead(d *schema.ResourceData, m interface{}) e
 	}
 	// Loop over all branches to see if the main branch we need exists.
 	if idSlice[1] == BindingReadResponse.Repository && BindingReadResponse.Alm == "github" {
-		d.Set("project", idSlice[0])
-		d.Set("repository", idSlice[1])
-		d.Set("alm_setting", BindingReadResponse.Key)
-		d.Set("monorepo", strconv.FormatBool(BindingReadResponse.Monorepo))
-		d.Set("summary_comment_enabled", strconv.FormatBool(BindingReadResponse.SummaryCommentEnabled))
+		_ = d.Set("project", idSlice[0])
+		_ = d.Set("repository", idSlice[1])
+		_ = d.Set("alm_setting", BindingReadResponse.Key)
+		_ = d.Set("monorepo", strconv.FormatBool(BindingReadResponse.Monorepo))
+		_ = d.Set("summary_comment_enabled", strconv.FormatBool(BindingReadResponse.SummaryCommentEnabled))
 
 		return nil
 	}
@@ -171,7 +171,7 @@ func resourceSonarqubeGithubBindingDelete(d *schema.ResourceData, m interface{})
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

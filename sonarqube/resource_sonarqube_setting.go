@@ -99,7 +99,7 @@ func resourceSonarqubeSettingsCreate(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	d.SetId(d.Get("key").(string))
 	return resourceSonarqubeSettingsRead(d, m)
@@ -126,7 +126,7 @@ func resourceSonarqubeSettingsRead(d *schema.ResourceData, m interface{}) error 
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	settingReadResponse := GetSettings{}
 	err = json.NewDecoder(resp.Body).Decode(&settingReadResponse)
@@ -136,10 +136,10 @@ func resourceSonarqubeSettingsRead(d *schema.ResourceData, m interface{}) error 
 
 	for _, value := range settingReadResponse.Setting {
 		if d.Id() == value.Key {
-			d.Set("key", value.Key)
-			d.Set("value", value.Value)
-			d.Set("values", value.Values)
-			d.Set("field_values", value.FieldValues)
+			_ = d.Set("key", value.Key)
+			_ = d.Set("value", value.Value)
+			_ = d.Set("values", value.Values)
+			_ = d.Set("field_values", value.FieldValues)
 			d.SetId(value.Key)
 			return nil
 		}
@@ -166,13 +166,13 @@ func resourceSonarqubeSettingsDelete(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
 
 func resourceSonarqubeSettingsImporter(d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
-	d.Set("key", d.Id())
+	_ = d.Set("key", d.Id())
 	if err := resourceSonarqubeSettingsRead(d, m); err != nil {
 		return nil, err
 	}
@@ -195,7 +195,7 @@ func resourceSonarqubeSettingsUpdate(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return resourceSonarqubeSettingsRead(d, m)
 }
@@ -246,7 +246,7 @@ func getComponentSettings(component string, m interface{}) ([]Setting, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	settingReadResponse := GetSettings{}
 	err = json.NewDecoder(resp.Body).Decode(&settingReadResponse)
@@ -306,7 +306,7 @@ func synchronizeSettings(d *schema.ResourceData, m interface{}) (bool, error) {
 	}
 
 	if changed {
-		d.Set("setting", componentSettings)
+		_ = d.Set("setting", componentSettings)
 	}
 
 	return changed, nil
@@ -373,7 +373,6 @@ func getComponentSettingUrlEncode(setting map[string]interface{}) url.Values {
 			b, _ := json.Marshal(value)
 			fv := string(b)
 			raw.Add("fieldValues", fv)
-			addedSetting = true
 		}
 	}
 	return raw

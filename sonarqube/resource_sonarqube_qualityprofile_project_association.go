@@ -84,7 +84,7 @@ func resourceSonarqubeQualityProfileProjectAssociationCreate(d *schema.ResourceD
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	id := fmt.Sprintf("%v/%v/%v", d.Get("quality_profile").(string), d.Get("project").(string), d.Get("language").(string))
 	d.SetId(id)
@@ -116,7 +116,7 @@ func resourceSonarqubeQualityProfileProjectAssociationRead(d *schema.ResourceDat
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	getQualityProfileResponse := GetQualityProfileList{}
@@ -162,7 +162,7 @@ func resourceSonarqubeQualityProfileProjectAssociationRead(d *schema.ResourceDat
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	getQualityProfileProjectResponse := GetQualityProfileProjectAssociation{}
@@ -173,9 +173,9 @@ func resourceSonarqubeQualityProfileProjectAssociationRead(d *schema.ResourceDat
 	for _, value := range getQualityProfileProjectResponse.Results {
 		if idSlice[1] == value.Key {
 			d.SetId(d.Id())
-			d.Set("project", value.Key)
-			d.Set("quality_profile", qualityProfile)
-			d.Set("language", language)
+			_ = d.Set("project", value.Key)
+			_ = d.Set("quality_profile", qualityProfile)
+			_ = d.Set("language", language)
 			return nil
 		}
 	}
@@ -203,7 +203,7 @@ func resourceSonarqubeQualityProfileProjectAssociationDelete(d *schema.ResourceD
 	if err != nil {
 		return fmt.Errorf("resourceSonarqubeQualityProfileProjectAssociationDelete: Failed to delete quality profile: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 

@@ -175,7 +175,7 @@ func resourceSonarqubeRuleCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	ruleCreateResponse := CreateRuleResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&ruleCreateResponse)
@@ -207,7 +207,7 @@ func resourceSonarqubeRuleRead(d *schema.ResourceData, m interface{}) error {
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	ruleReadResponse := GetRule{}
 	err = json.NewDecoder(resp.Body).Decode(&ruleReadResponse)
@@ -218,12 +218,12 @@ func resourceSonarqubeRuleRead(d *schema.ResourceData, m interface{}) error {
 	for _, value := range ruleReadResponse.Rule {
 		if d.Id() == value.RuleKey {
 			d.SetId(value.RuleKey)
-			d.Set("markdown_description", value.MdDesc)
-			d.Set("name", value.Name)
-			d.Set("severity", value.Severity)
-			d.Set("template_key", value.TemplateKey)
-			d.Set("status", value.Status)
-			d.Set("type", value.Type)
+			_ = d.Set("markdown_description", value.MdDesc)
+			_ = d.Set("name", value.Name)
+			_ = d.Set("severity", value.Severity)
+			_ = d.Set("template_key", value.TemplateKey)
+			_ = d.Set("status", value.Status)
+			_ = d.Set("type", value.Type)
 			return nil
 		}
 	}
@@ -249,7 +249,7 @@ func resourceSonarqubeRuleDelete(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -283,7 +283,7 @@ func resourceSonarqubeRuleUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return resourceSonarqubeRuleRead(d, m)
 }

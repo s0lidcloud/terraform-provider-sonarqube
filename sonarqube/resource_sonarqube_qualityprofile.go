@@ -124,7 +124,7 @@ func resourceSonarqubeQualityProfileCreate(d *schema.ResourceData, m interface{}
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	qualityProfileResponse := CreateQualityProfileResponse{}
@@ -166,7 +166,7 @@ func resourceSonarqubeQualityProfileRead(d *schema.ResourceData, m interface{}) 
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	getQualityProfileResponse := GetQualityProfileList{}
@@ -178,10 +178,10 @@ func resourceSonarqubeQualityProfileRead(d *schema.ResourceData, m interface{}) 
 	for _, value := range getQualityProfileResponse.Profiles {
 		if d.Id() == value.Key {
 			d.SetId(value.Key)
-			d.Set("name", value.Name)
-			d.Set("language", value.Language)
-			d.Set("key", value.Key)
-			d.Set("is_default", value.IsDefault)
+			_ = d.Set("name", value.Name)
+			_ = d.Set("language", value.Language)
+			_ = d.Set("key", value.Key)
+			_ = d.Set("is_default", value.IsDefault)
 			return nil
 		}
 	}
@@ -215,7 +215,7 @@ func resourceSonarqubeQualityProfileDelete(d *schema.ResourceData, m interface{}
 	if err != nil {
 		return fmt.Errorf("resourceSonarqubeQualityProfileDelete: Failed to delete quality profile: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 
@@ -254,7 +254,7 @@ func setDefaultQualityProfile(d *schema.ResourceData, m interface{}, setDefault 
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	return nil
 }
 
@@ -277,6 +277,6 @@ func setParentQualityProfile(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	return nil
 }

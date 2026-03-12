@@ -83,7 +83,7 @@ func resourceSonarqubeQualityGateUsergroupAssociationCreate(d *schema.ResourceDa
 		http.StatusNoContent,
 		"resourceSonarqubeQualityGateUsergroupAssociationCreate",
 	)
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if err != nil {
 		return fmt.Errorf("resourceSonarqubeQualityGateUsergroupAssociationCreate: Failed creating Sonarqube quality gate usergroup association for quality gate '%s': %+v", d.Get("gatename").(string), err)
@@ -128,7 +128,7 @@ func resourceSonarqubeQualityGateUsergroupAssociationRead(d *schema.ResourceData
 		}
 		return fmt.Errorf("resourceSonarqubeQualityGateUsergroupAssociationRead: Failed to call quality gate usergroup association api: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	qualityGateUsergroupAssociationReadResponse := GetQualityGateUsergroupAssociation{}
@@ -142,7 +142,7 @@ func resourceSonarqubeQualityGateUsergroupAssociationRead(d *schema.ResourceData
 		login := d.Get("login_name").(string)
 		for _, value := range qualityGateUsergroupAssociationReadResponse.Users {
 			if strings.EqualFold(value.Login, login) {
-				d.Set("login_name", value.Login)
+				_ = d.Set("login_name", value.Login)
 				return nil
 			}
 		}
@@ -190,7 +190,7 @@ func resourceSonarqubeQualityGateUsergroupAssociationDelete(d *schema.ResourceDa
 	if err != nil {
 		return fmt.Errorf("resourceSonarqubeQualityGateUsergroupAssociationDelete: Failed to call quality gate usergroup association api: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -202,7 +202,7 @@ func createGatePermissionId(gateName string, targetType string, target string) s
 func checkGatePermissionFeatureSupport(conf *ProviderConfiguration) error {
 	minimumVersion, _ := version.NewVersion("9.2")
 	if conf.sonarQubeVersion.LessThan(minimumVersion) {
-		return fmt.Errorf("Minimum required SonarQube version for quality gate permissions is %s", minimumVersion)
+		return fmt.Errorf("minimum required SonarQube version for quality gate permissions is %s", minimumVersion)
 	}
 	return nil
 }

@@ -21,18 +21,18 @@ func testSweepSonarqubeUserExteernalIdentitySweeper(r string) error {
 
 func testAccSonarqubeUserExternalIdentityConfig(rnd string, login string, externalIdentity string, externalProvider string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_user" "%[1]s" {
-			login_name = "%[2]s"
-			name       = "Test User"
-			email      = "terraform-test@sonarqube.com"
-			is_local   = false
-		}
-
-		resource "sonarqube_user_external_identity" "%[1]s" {
-			login_name         = sonarqube_user.%[1]s.login_name
-			external_identity  = "%[3]s"
-			external_provider  = "%[4]s"
-		}`, rnd, login, externalIdentity, externalProvider)
+	resource "sonarqube_user" "%[1]s" {
+	login_name = "%[2]s"
+	name       = "Test User"
+	email      = "terraform-test@sonarqube.com"
+	is_local   = false
+	}
+	
+	resource "sonarqube_user_external_identity" "%[1]s" {
+	login_name         = sonarqube_user.%[1]s.login_name
+	external_identity  = "%[3]s"
+	external_provider  = "%[4]s"
+	}`, rnd, login, externalIdentity, externalProvider)
 }
 
 func TestAccSonarqubeUserExternalIdentity(t *testing.T) {
@@ -57,19 +57,19 @@ func TestAccSonarqubeUserExternalIdentity(t *testing.T) {
 
 func testAccSonarqubeUserExternalIdentityLocalUserConfig(rnd string, login string, externalIdentity string, externalProvider string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_user" "%[1]s" {
-			login_name = "%[2]s"
-			name       = "Test User"
-			email      = "terraform-test@sonarqube.com"
-			is_local   = true
-			password   = "secret-sauce1"
-		}
-
-		resource "sonarqube_user_external_identity" "%[1]s" {
-			login_name         = sonarqube_user.%[1]s.login_name
-			external_identity  = "%[3]s"
-			external_provider  = "%[4]s"
-		}`, rnd, login, externalIdentity, externalProvider)
+	resource "sonarqube_user" "%[1]s" {
+	login_name = "%[2]s"
+	name       = "Test User"
+	email      = "terraform-test@sonarqube.com"
+	is_local   = true
+	password   = "secret-sauce1"
+	}
+	
+	resource "sonarqube_user_external_identity" "%[1]s" {
+	login_name         = sonarqube_user.%[1]s.login_name
+	external_identity  = "%[3]s"
+	external_provider  = "%[4]s"
+	}`, rnd, login, externalIdentity, externalProvider)
 }
 
 func TestAccSonarqubeUserExternalLocalUserIdentity(t *testing.T) {

@@ -20,10 +20,10 @@ func testSweepSonarqubeQualityProfileSweeper(r string) error {
 
 func testAccSonarqubeQualityProfileBasicConfig(rnd string, name string, language string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_qualityprofile" "%[1]s" {
-			name     = "%[2]s"
-			language = "%[3]s"
-		}`, rnd, name, language)
+	resource "sonarqube_qualityprofile" "%[1]s" {
+	name     = "%[2]s"
+	language = "%[3]s"
+	}`, rnd, name, language)
 }
 
 func TestAccSonarqubeQualityProfileBasic(t *testing.T) {

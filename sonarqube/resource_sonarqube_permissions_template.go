@@ -83,7 +83,7 @@ func resourceSonarqubePermissionTemplateCreate(d *schema.ResourceData, m interfa
 	if err != nil {
 		return fmt.Errorf("error creating Sonarqube permission template: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	permissionTemplateResponse := CreatePermissionTemplateResponse{}
@@ -130,7 +130,7 @@ func resourceSonarqubePermissionTemplateRead(d *schema.ResourceData, m interface
 		}
 		return fmt.Errorf("error reading Sonarqube permission templates: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	permissionTemplateReadResponse := GetPermissionTemplates{}
@@ -146,9 +146,9 @@ func resourceSonarqubePermissionTemplateRead(d *schema.ResourceData, m interface
 			log.Printf("[DEBUG][resourceSonarqubePermissionTemplateRead] Found PermissionTemplate with ID '%s'", value.ID)
 			// If it does, set the values of that template
 			d.SetId(value.ID)
-			d.Set("name", value.Name)
-			d.Set("description", value.Description)
-			d.Set("project_key_pattern", value.ProjectKeyPattern)
+			_ = d.Set("name", value.Name)
+			_ = d.Set("description", value.Description)
+			_ = d.Set("project_key_pattern", value.ProjectKeyPattern)
 			return nil
 		}
 	}
@@ -189,7 +189,7 @@ func resourceSonarqubePermissionTemplateUpdate(d *schema.ResourceData, m interfa
 	if err != nil {
 		return fmt.Errorf("error updating Sonarqube permission template: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// If default is set to true, set this permission template as the default.
 	if d.Get("default").(bool) {
@@ -219,7 +219,7 @@ func resourceSonarqubePermissionTemplateDelete(d *schema.ResourceData, m interfa
 	if err != nil {
 		return fmt.Errorf("error deleting Sonarqube permission template: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -247,6 +247,6 @@ func resourceSonarqubePermissionTemplateSetDefault(sonarQubeURL url.URL, templat
 	if err != nil {
 		return fmt.Errorf("error setting Sonarqube permission template to default: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	return nil
 }

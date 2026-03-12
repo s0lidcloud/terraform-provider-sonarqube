@@ -73,7 +73,7 @@ func resourceSonarqubePluginCreate(d *schema.ResourceData, m interface{}) error 
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	d.SetId(d.Get("key").(string))
 	return resourceSonarqubePluginRead(d, m)
@@ -97,7 +97,7 @@ func resourceSonarqubePluginRead(d *schema.ResourceData, m interface{}) error {
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	getInstalledPlugins := GetInstalledPlugins{}
@@ -111,7 +111,7 @@ func resourceSonarqubePluginRead(d *schema.ResourceData, m interface{}) error {
 		if d.Id() == value.Key {
 			// If it does, set the values of that project
 			d.SetId(value.Key)
-			d.Set("key", value.Key)
+			_ = d.Set("key", value.Key)
 			return nil
 		}
 	}
@@ -138,7 +138,7 @@ func resourceSonarqubePluginDelete(d *schema.ResourceData, m interface{}) error 
 	if err != nil {
 		return fmt.Errorf("resourceSonarqubePluginDelete: Failed to delete plugin: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

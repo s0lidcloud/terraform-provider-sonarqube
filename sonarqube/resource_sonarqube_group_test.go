@@ -21,11 +21,11 @@ func testSweepSonarqubeGroupSweeper(r string) error {
 
 func testAccSonarqubeGroupBasicConfig(rnd string, name string, description string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_group" "%[1]s" {
-		  name        = "%[2]s"
-		  description = "%[3]s"
-		}
-		`, rnd, name, description)
+	resource "sonarqube_group" "%[1]s" {
+	name        = "%[2]s"
+	description = "%[3]s"
+	}
+	`, rnd, name, description)
 }
 
 func TestAccSonarqubeGroupBasic(t *testing.T) {

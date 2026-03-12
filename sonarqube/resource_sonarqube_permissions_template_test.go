@@ -21,21 +21,21 @@ func testSweepPermissionTemplateSweeper(r string) error {
 
 func testAccSonarqubePermissionTemplateBasicConfig(rnd string, name string, description string, projectKeyPattern string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_permission_template" "%[1]s" {
-		  name                = "%[2]s"
-		  description         = "%[3]s"
-		  project_key_pattern = "%[4]s"
-		}`, rnd, name, description, projectKeyPattern)
+	resource "sonarqube_permission_template" "%[1]s" {
+	name                = "%[2]s"
+	description         = "%[3]s"
+	project_key_pattern = "%[4]s"
+	}`, rnd, name, description, projectKeyPattern)
 }
 
 func testAccSonarqubePermissionTemplateDefaultTemplate(rnd string, name string, description string, projectKeyPattern string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_permission_template" "%[1]s" {
-		  name                = "%[2]s"
-		  description         = "%[3]s"
-		  project_key_pattern = "%[4]s"
-		  default             = true
-		}`, rnd, name, description, projectKeyPattern)
+	resource "sonarqube_permission_template" "%[1]s" {
+	name                = "%[2]s"
+	description         = "%[3]s"
+	project_key_pattern = "%[4]s"
+	default             = true
+	}`, rnd, name, description, projectKeyPattern)
 }
 
 func TestAccSonarqubePermissionTemplateBasic(t *testing.T) {

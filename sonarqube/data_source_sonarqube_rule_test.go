@@ -9,19 +9,19 @@ import (
 
 func testAccSonarqubeRuleDataSourceConfig(rnd string, custom_key string, markdown_description string, name string, template_key string, severity string, status string, type_p string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_rule" "%[1]s" {
-			custom_key = "%[2]s"
-			markdown_description = "%[3]s"
-			name = "%[4]s"
-			template_key = "%[5]s"
-			severity = "%[6]s"
-			status = "%[7]s"
-			type = "%[8]s"
-		}
-
-		data "sonarqube_rule" "%[1]s" {
-			key = sonarqube_rule.%[1]s.id
-		}`, rnd, custom_key, markdown_description, name, template_key, severity, status, type_p)
+	resource "sonarqube_rule" "%[1]s" {
+	custom_key = "%[2]s"
+	markdown_description = "%[3]s"
+	name = "%[4]s"
+	template_key = "%[5]s"
+	severity = "%[6]s"
+	status = "%[7]s"
+	type = "%[8]s"
+	}
+	
+	data "sonarqube_rule" "%[1]s" {
+	key = sonarqube_rule.%[1]s.id
+	}`, rnd, custom_key, markdown_description, name, template_key, severity, status, type_p)
 }
 
 func TestAccSonarqubeRuleDataSource(t *testing.T) {

@@ -20,26 +20,26 @@ func testSweepSonarqubeSettingSweeper(r string) error {
 
 func testAccSonarqubeSettingBasicConfig(rnd string, key string, value string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_setting" "%[1]s" {
-			key = "%[2]s"
-			value = "%[3]s"
-		}`, rnd, key, value)
+	resource "sonarqube_setting" "%[1]s" {
+	key = "%[2]s"
+	value = "%[3]s"
+	}`, rnd, key, value)
 }
 func testAccSonarqubeSettingConfigMultipleValues(rnd string, key string, values []string) string {
 	formattedValues := generateHCLList(values)
 	return fmt.Sprintf(`
-		resource "sonarqube_setting" "%[1]s" {
-			key = "%[2]s"
-			values = %[3]s
-		}`, rnd, key, formattedValues)
+	resource "sonarqube_setting" "%[1]s" {
+	key = "%[2]s"
+	values = %[3]s
+	}`, rnd, key, formattedValues)
 }
 func testAccSonarqubeSettingConfigMultipleFields(rnd string, key string, fields map[string]string) string {
 	formattedFields := generateHCLMap(fields)
 	return fmt.Sprintf(`
-		resource "sonarqube_setting" "%[1]s" {
-			key = "%[2]s"
-			field_values = [%[3]s]
-		}`, rnd, key, formattedFields)
+	resource "sonarqube_setting" "%[1]s" {
+	key = "%[2]s"
+	field_values = [%[3]s]
+	}`, rnd, key, formattedFields)
 }
 
 func TestAccSonarqubeSettingBasic(t *testing.T) {

@@ -9,16 +9,16 @@ import (
 
 func testAccSonarqubeUserDataSourceConfig(rnd string, name string, email string, password string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_user" "%[1]s" {
-			login_name = "%[2]s"
-			name       = "%[2]s"
-			email      = "%[3]s"
-			password   = "%[4]s"
-		}
-		
-		data "sonarqube_user" "%[1]s" {
-			login_name = sonarqube_user.%[1]s.login_name
-		}`, rnd, name, email, password)
+	resource "sonarqube_user" "%[1]s" {
+	login_name = "%[2]s"
+	name       = "%[2]s"
+	email      = "%[3]s"
+	password   = "%[4]s"
+	}
+	
+	data "sonarqube_user" "%[1]s" {
+	login_name = sonarqube_user.%[1]s.login_name
+	}`, rnd, name, email, password)
 }
 
 func TestAccSonarqubeUserDataSource(t *testing.T) {

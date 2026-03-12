@@ -30,25 +30,25 @@ func testAccPreCheckQualityGatePermissionFeature(t *testing.T) {
 
 func testAccSonarqubeQualitygateGroupAssociationGateName(rnd string, name string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_group" "%[1]s" {
-			name = "%[2]s"
-			description = "foo"
-		}
-
-		resource "sonarqube_qualitygate" "%[1]s" {
-			name = "%[2]s"
-
-			condition {
-				metric    = "new_coverage"
-				op        = "LT"
-				threshold = "30"
-			}
-		}
-
-		resource "sonarqube_qualitygate_usergroup_association" "%[1]s" {
-			gatename   = sonarqube_qualitygate.%[1]s.name
-			group_name = sonarqube_group.%[1]s.name
-		}`, rnd, name)
+	resource "sonarqube_group" "%[1]s" {
+	name = "%[2]s"
+	description = "foo"
+	}
+	
+	resource "sonarqube_qualitygate" "%[1]s" {
+	name = "%[2]s"
+	
+	condition {
+	metric    = "new_coverage"
+	op        = "LT"
+	threshold = "30"
+	}
+	}
+	
+	resource "sonarqube_qualitygate_usergroup_association" "%[1]s" {
+	gatename   = sonarqube_qualitygate.%[1]s.name
+	group_name = sonarqube_group.%[1]s.name
+	}`, rnd, name)
 }
 
 func TestAccSonarqubeQualitygateGroupAssociationGateName(t *testing.T) {
@@ -72,26 +72,26 @@ func TestAccSonarqubeQualitygateGroupAssociationGateName(t *testing.T) {
 
 func testAccSonarqubeQualitygateUserAssociationGateName(rnd string, name string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_user" "%[1]s" {
-			login_name = "%[2]s"
-			name       = "%[2]s"
-			password   = "secret-sauce37!"
-		}
-
-		resource "sonarqube_qualitygate" "%[1]s" {
-			name = "%[2]s"
-
-			condition {
-				metric    = "new_coverage"
-				op        = "LT"
-				threshold = "30"
-			}
-		}
-
-		resource "sonarqube_qualitygate_usergroup_association" "%[1]s" {
-			gatename   = sonarqube_qualitygate.%[1]s.name
-			login_name = sonarqube_user.%[1]s.name
-		}`, rnd, name)
+	resource "sonarqube_user" "%[1]s" {
+	login_name = "%[2]s"
+	name       = "%[2]s"
+	password   = "secret-sauce37!"
+	}
+	
+	resource "sonarqube_qualitygate" "%[1]s" {
+	name = "%[2]s"
+	
+	condition {
+	metric    = "new_coverage"
+	op        = "LT"
+	threshold = "30"
+	}
+	}
+	
+	resource "sonarqube_qualitygate_usergroup_association" "%[1]s" {
+	gatename   = sonarqube_qualitygate.%[1]s.name
+	login_name = sonarqube_user.%[1]s.name
+	}`, rnd, name)
 }
 
 func TestAccSonarqubeQualitygateUserAssociationGateName(t *testing.T) {

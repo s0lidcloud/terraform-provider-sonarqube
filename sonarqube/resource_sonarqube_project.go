@@ -139,7 +139,7 @@ func projectSetTags(d *schema.ResourceData, m interface{}, sonarQubeURL url.URL)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -164,7 +164,7 @@ func resourceSonarqubeProjectCreate(d *schema.ResourceData, m interface{}) error
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	err = projectSetTags(d, m, m.(*ProviderConfiguration).sonarQubeURL)
 	if err != nil {
@@ -210,7 +210,7 @@ func resourceSonarqubeProjectRead(d *schema.ResourceData, m interface{}) error {
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	projectReadResponse := GetProject{}
@@ -221,9 +221,9 @@ func resourceSonarqubeProjectRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	d.SetId(projectReadResponse.Component.Key)
-	d.Set("name", projectReadResponse.Component.Name)
-	d.Set("project", projectReadResponse.Component.Key)
-	d.Set("visibility", projectReadResponse.Component.Visibility)
+	_ = d.Set("name", projectReadResponse.Component.Name)
+	_ = d.Set("project", projectReadResponse.Component.Key)
+	_ = d.Set("visibility", projectReadResponse.Component.Visibility)
 
 	// Get settings
 	var projectSettings []Setting
@@ -243,11 +243,11 @@ func resourceSonarqubeProjectRead(d *schema.ResourceData, m interface{}) error {
 				}
 			}
 		}
-		d.Set("setting", settings)
+		_ = d.Set("setting", settings)
 	}
 
 	if len(projectReadResponse.Component.Tags) > 0 {
-		d.Set("tags", projectReadResponse.Component.Tags)
+		_ = d.Set("tags", projectReadResponse.Component.Tags)
 	}
 
 	return nil
@@ -274,7 +274,7 @@ func resourceSonarqubeProjectUpdate(d *schema.ResourceData, m interface{}) error
 		if err != nil {
 			return fmt.Errorf("error updating Sonarqube project: %+v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 	}
 
 	if d.HasChanges("tags") {
@@ -305,7 +305,7 @@ func resourceSonarqubeProjectUpdate(d *schema.ResourceData, m interface{}) error
 		if err != nil {
 			return fmt.Errorf("error updating Sonarqube project key: %+v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 
 		// Update the id like in github provider (https://github.com/integrations/terraform-provider-github/blob/b7e63d63c59b9b1df9c6d05204bdaa1b349e8c8a/github/resource_github_repository.go#L746-L750)
 		d.SetId(newKey.(string))
@@ -338,13 +338,13 @@ func resourceSonarqubeProjectDelete(d *schema.ResourceData, m interface{}) error
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
 
 func resourceSonarqubeProjectImport(d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
 	// As per the docs, use the id to make the read work as intended (https://developer.hashicorp.com/terraform/plugin/sdkv2/resources/import)
-	d.Set("project", d.Id())
+	_ = d.Set("project", d.Id())
 	return []*schema.ResourceData{d}, nil
 }

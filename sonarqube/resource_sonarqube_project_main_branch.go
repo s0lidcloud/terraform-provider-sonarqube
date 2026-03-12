@@ -70,7 +70,7 @@ func resourceSonarqubeProjectMainBranchCreate(d *schema.ResourceData, m interfac
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	id := fmt.Sprintf("%v/%v", d.Get("project").(string), d.Get("name").(string))
 	d.SetId(id)
@@ -100,7 +100,7 @@ func resourceSonarqubeProjectMainBranchRead(d *schema.ResourceData, m interface{
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	branchReadResponse := GetBranches{}
@@ -111,8 +111,8 @@ func resourceSonarqubeProjectMainBranchRead(d *schema.ResourceData, m interface{
 	// Loop over all branches to see if the main branch we need exists.
 	for _, value := range branchReadResponse.Branches {
 		if idSlice[1] == value.Name && value.IsMain {
-			d.Set("project", idSlice[0])
-			d.Set("name", value.Name)
+			_ = d.Set("project", idSlice[0])
+			_ = d.Set("name", value.Name)
 			return nil
 		}
 	}
@@ -140,7 +140,7 @@ func resourceSonarqubeProjectMainBranchDelete(d *schema.ResourceData, m interfac
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

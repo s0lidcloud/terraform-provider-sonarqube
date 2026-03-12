@@ -71,7 +71,7 @@ func resourceSonarqubeAlmGitlabCreate(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	d.SetId(d.Get("key").(string))
 
@@ -96,7 +96,7 @@ func resourceSonarqubeAlmGitlabRead(d *schema.ResourceData, m interface{}) error
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	AlmGitlabReadResponse := GetAlmGitlab{}
@@ -107,8 +107,8 @@ func resourceSonarqubeAlmGitlabRead(d *schema.ResourceData, m interface{}) error
 	// Loop over all GitHub instances to see if the Alm instance exists.
 	for _, value := range AlmGitlabReadResponse.Gitlab {
 		if d.Id() == value.Key {
-			d.Set("key", value.Key)
-			d.Set("url", value.URL)
+			_ = d.Set("key", value.Key)
+			_ = d.Set("url", value.URL)
 			// The personal_access_token is a secured property that is not returned
 			// d.Set("personal_access_token", value.PersonalAccessToken)
 			return nil
@@ -138,7 +138,7 @@ func resourceSonarqubeAlmGitlabUpdate(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return resourceSonarqubeAlmGitlabRead(d, m)
 }
@@ -160,7 +160,7 @@ func resourceSonarqubeAlmGitlabDelete(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

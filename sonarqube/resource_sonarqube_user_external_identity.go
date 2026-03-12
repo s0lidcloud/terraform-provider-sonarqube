@@ -41,10 +41,10 @@ func resourceSonarqubeUserExternalIdentity() *schema.Resource {
 func resourceSonarqubeUserExternalIdentityCreate(d *schema.ResourceData, m interface{}) error {
 	isLocal, err := isLocal(d.Get("login_name").(string), m)
 	if err != nil {
-		return fmt.Errorf("Error updating Sonarqube user: %+v", err)
+		return fmt.Errorf("error updating Sonarqube user: %+v", err)
 	}
 	if isLocal {
-		return fmt.Errorf("Error setting external identity: Sonarqube user '%+v' is not 'external'", d.Get("login_name").(string))
+		return fmt.Errorf("error setting external identity: Sonarqube user '%+v' is not 'external'", d.Get("login_name").(string))
 	}
 
 	sonarQubeURL := m.(*ProviderConfiguration).sonarQubeURL
@@ -66,12 +66,12 @@ func resourceSonarqubeUserExternalIdentityCreate(d *schema.ResourceData, m inter
 		"resourceSonarqubeUserExternalIdentityCreate",
 	)
 	if err != nil {
-		return fmt.Errorf("Error updating Sonarqube user: %+v", err)
+		return fmt.Errorf("error updating Sonarqube user: %+v", err)
 	}
 
 	d.SetId(d.Get("login_name").(string))
-	d.Set("external_identity", d.Get("external_identity").(string))
-	d.Set("external_provider", d.Get("external_provider").(string))
+	_ = d.Set("external_identity", d.Get("external_identity").(string))
+	_ = d.Set("external_provider", d.Get("external_provider").(string))
 
 	return nil
 }
@@ -102,15 +102,15 @@ func isLocal(login string, m interface{}) (bool, error) {
 		"resourceSonarqubeUserExternalIdentity",
 	)
 	if err != nil {
-		return false, fmt.Errorf("Error reading Sonarqube user: %+v", err)
+		return false, fmt.Errorf("error reading sonarqube user: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	userResponse := GetUser{}
 	err = json.NewDecoder(resp.Body).Decode(&userResponse)
 	if err != nil {
-		return false, fmt.Errorf("Failed to decode json into struct: %+v", err)
+		return false, fmt.Errorf("failed to decode json into struct: %+v", err)
 	}
 
 	// Loop over all users to find the requested user
@@ -121,5 +121,5 @@ func isLocal(login string, m interface{}) (bool, error) {
 	}
 
 	// User not found in response
-	return false, fmt.Errorf("Failed to find user: %+v", login)
+	return false, fmt.Errorf("failed to find user: %+v", login)
 }

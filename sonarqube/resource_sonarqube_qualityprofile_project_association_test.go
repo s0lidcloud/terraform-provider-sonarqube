@@ -20,22 +20,22 @@ func testSweepSonarqubeQualityProfileProjectAssociationSweeper(r string) error {
 
 func testAccSonarqubeQualityProfileProjectAssociationBasicConfig(rnd string, name string, language string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_qualityprofile" "%[1]s" {
-			name     = "%[2]s"
-			language = "%[3]s"
-		}
-
-		resource "sonarqube_project" "%[1]s" {
-			name       = "%[2]s"
-			project    = "%[2]s"
-			visibility = "public" 
-		}
-
-		resource "sonarqube_qualityprofile_project_association" "%[1]s" {
-			quality_profile = sonarqube_qualityprofile.%[1]s.name
-			project         = sonarqube_project.%[1]s.name
-			language        = "%[3]s"
-		}`, rnd, name, language)
+	resource "sonarqube_qualityprofile" "%[1]s" {
+	name     = "%[2]s"
+	language = "%[3]s"
+	}
+	
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[2]s"
+	project    = "%[2]s"
+	visibility = "public" 
+	}
+	
+	resource "sonarqube_qualityprofile_project_association" "%[1]s" {
+	quality_profile = sonarqube_qualityprofile.%[1]s.name
+	project         = sonarqube_project.%[1]s.name
+	language        = "%[3]s"
+	}`, rnd, name, language)
 }
 
 func TestAccSonarqubeQualityProfileProjectAssociationBasic(t *testing.T) {
@@ -70,17 +70,17 @@ func TestAccSonarqubeQualityProfileProjectAssociationBasic(t *testing.T) {
 
 func testAccSonarqubeQualityProfileProjectAssociationSonarWay(rnd string, name string, language string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s" {
-			name       = "%[2]s"
-			project    = "%[2]s"
-			visibility = "public" 
-		}
-
-		resource "sonarqube_qualityprofile_project_association" "%[1]s" {
-			quality_profile = "Sonar way"
-			project         = sonarqube_project.%[1]s.name
-			language        = "%[3]s"
-		}`, rnd, name, language)
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[2]s"
+	project    = "%[2]s"
+	visibility = "public" 
+	}
+	
+	resource "sonarqube_qualityprofile_project_association" "%[1]s" {
+	quality_profile = "Sonar way"
+	project         = sonarqube_project.%[1]s.name
+	language        = "%[3]s"
+	}`, rnd, name, language)
 }
 
 func TestAccSonarqubeQualityProfileProjectAssociationSonarWay(t *testing.T) {

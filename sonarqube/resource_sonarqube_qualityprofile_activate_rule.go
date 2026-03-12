@@ -105,7 +105,7 @@ func resourceSonarqubeQualityProfileRuleCreate(d *schema.ResourceData, m interfa
 	if err != nil {
 		return fmt.Errorf("resourceSonarqubeQualityProfileRuleCreate: Failed to delete quality profile: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	d.SetId(d.Get("rule").(string))
 	return resourceSonarqubeQualityProfileRuleRead(d, m)
@@ -129,7 +129,7 @@ func resourceSonarqubeQualityProfileRuleDelete(d *schema.ResourceData, m interfa
 	if err != nil {
 		return fmt.Errorf("resourceSonarqubeQualityProfileRuleDelete: Failed to delete quality profile: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -156,7 +156,7 @@ func resourceSonarqubeQualityProfileRuleRead(d *schema.ResourceData, m interface
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	activeRuleReadResponse := GetActiveRules{}
 	err = json.NewDecoder(resp.Body).Decode(&activeRuleReadResponse)

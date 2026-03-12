@@ -133,7 +133,7 @@ func resourceSonarqubeQualityGateCreate(d *schema.ResourceData, m interface{}) e
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	qualityGateResponse := CreateQualityGateResponse{}
@@ -189,7 +189,7 @@ func resourceSonarqubeQualityGateRead(d *schema.ResourceData, m interface{}) err
 	}
 	updateResourceDataFromQualityGateReadResponse(d, qualityGateReadResponse)
 	// Api returns if true if set as default is available. when is_default=true setAsDefault=false so is_default=true
-	d.Set("is_default", !qualityGateReadResponse.Actions.SetAsDefault)
+	_ = d.Set("is_default", !qualityGateReadResponse.Actions.SetAsDefault)
 	return nil
 }
 
@@ -198,7 +198,7 @@ var lock_update_default sync.Mutex
 func resourceSonarqubeQualityGateUpdate(d *schema.ResourceData, m interface{}) error {
 	_, copied_gate := d.GetOk("copy_from")
 
-	if _, has_conditions := d.GetOk("condition"); !(copied_gate || has_conditions) {
+	if _, has_conditions := d.GetOk("condition"); !copied_gate && !has_conditions {
 		return fmt.Errorf("resourceQualityGateCreate: either copy_from or at least one condition block must be specified for a quality gate")
 	}
 
@@ -283,7 +283,7 @@ func resourceSonarqubeQualityGateDelete(d *schema.ResourceData, m interface{}) e
 	if err != nil {
 		return fmt.Errorf("resourceQualityGateDelete: Failed to delete quality gate: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -319,7 +319,7 @@ func setDefaultQualityGate(d *schema.ResourceData, m interface{}, setDefault boo
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	return nil
 }
 
@@ -344,7 +344,7 @@ func readQualityGateFromApi(d *schema.ResourceData, m interface{}) (*GetQualityG
 		}
 		return nil, fmt.Errorf("readQualityGateFromApi: Failed to call api/qualitygates/show: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	qualityGateReadResponse := GetQualityGate{}
@@ -389,7 +389,7 @@ func synchronizeConditions(d *schema.ResourceData, m interface{}, apiQualityGate
 	}
 
 	if changed {
-		d.Set("condition", qualityGateConditions)
+		_ = d.Set("condition", qualityGateConditions)
 	}
 
 	return changed, nil
@@ -447,10 +447,10 @@ func removeDeletedConditions(apiQualityGateConditions *[]ReadQualityGateConditio
 
 func updateResourceDataFromQualityGateReadResponse(d *schema.ResourceData, qualityGateReadResponse *GetQualityGate) {
 	d.SetId(qualityGateReadResponse.Name)
-	d.Set("name", qualityGateReadResponse.Name)
+	_ = d.Set("name", qualityGateReadResponse.Name)
 	// Copied gates do not have condition blocks so we don't want to populate from the API.
 	if _, copiedGate := d.GetOk("copy_from"); !copiedGate {
-		d.Set("condition", flattenReadQualityGateConditionsResponse(&qualityGateReadResponse.Conditions))
+		_ = d.Set("condition", flattenReadQualityGateConditionsResponse(&qualityGateReadResponse.Conditions))
 	}
 }
 
@@ -476,7 +476,7 @@ func createCondition(qualityGateName string, metric string, op string, threshold
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	qualityGateConditionResponse := ReadQualityGateConditionsResponse{}
@@ -510,7 +510,7 @@ func updateCondition(id, metric, op, threshold string, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -532,7 +532,7 @@ func deleteCondition(id string, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -557,7 +557,7 @@ func updateQualityGateName(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	return nil
 }
 

@@ -75,7 +75,7 @@ func resourceSonarqubeGroupMemberCreate(d *schema.ResourceData, m interface{}) e
 	if err != nil {
 		return fmt.Errorf("error adding user '%s' to Sonarqube group '%s': %w", d.Get("login_name").(string), d.Get("name").(string), err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	d.SetId(groupMembershipId)
 
@@ -104,7 +104,7 @@ func resourceSonarqubeGroupMemberRead(d *schema.ResourceData, m interface{}) err
 		}
 		return fmt.Errorf("error reading Sonarqube members of group '%s': %w", d.Get("name").(string), err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	readSuccess := false
 	// Decode response into struct
@@ -118,8 +118,8 @@ func resourceSonarqubeGroupMemberRead(d *schema.ResourceData, m interface{}) err
 		if d.Get("login_name").(string) == value.LoginName {
 			// If it does, set the values of that group membership
 			d.SetId(createGroupMembershipId(d.Get("name").(string), d.Get("login_name").(string)))
-			d.Set("name", d.Get("name").(string))
-			d.Set("login_name", value.LoginName)
+			_ = d.Set("name", d.Get("name").(string))
+			_ = d.Set("login_name", value.LoginName)
 			readSuccess = true
 			break
 		}
@@ -152,7 +152,7 @@ func resourceSonarqubeGroupMemberDelete(d *schema.ResourceData, m interface{}) e
 	if err != nil {
 		return fmt.Errorf("error deleting Sonarqube member '%s' from group '%s': %w", d.Get("login_name").(string), d.Get("name").(string), err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -165,8 +165,8 @@ func resourceSonarqubeGroupMemberImport(d *schema.ResourceData, m interface{}) (
 
 	exists, _ := checkGroupMemberExists(groupName, loginName, m)
 	if exists {
-		d.Set("name", groupName)
-		d.Set("login_name", loginName)
+		_ = d.Set("name", groupName)
+		_ = d.Set("login_name", loginName)
 
 		return []*schema.ResourceData{d}, nil
 	} else {
@@ -192,7 +192,7 @@ func checkGroupMemberExists(groupName string, loginName string, m interface{}) (
 	if err != nil {
 		return false, fmt.Errorf("error reading Sonarqube members of group '%s': %w", groupName, err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	groupMemberReadResponse := GetGroupMembersResponse{}

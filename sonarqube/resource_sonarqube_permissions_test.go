@@ -22,15 +22,15 @@ func testSweepPermissionSweeper(r string) error {
 func testAccSonarqubePermissionGroupNameConfig(id string, groupName string, permissions []string) string {
 	formattedPermissions := generateHCLList(permissions)
 	return fmt.Sprintf(`
-		resource "sonarqube_group" "%[1]s" {
-			name        = "%[2]s"
-			description = "%[2]s"
-		}
-
-		resource "sonarqube_permissions" "%[1]s" {
-			group_name  = sonarqube_group.%[1]s.name
-			permissions = %[3]s
-		}`, id, groupName, formattedPermissions)
+	resource "sonarqube_group" "%[1]s" {
+	name        = "%[2]s"
+	description = "%[2]s"
+	}
+	
+	resource "sonarqube_permissions" "%[1]s" {
+	group_name  = sonarqube_group.%[1]s.name
+	permissions = %[3]s
+	}`, id, groupName, formattedPermissions)
 }
 
 func TestAccSonarqubePermissionGroupName(t *testing.T) {
@@ -62,17 +62,17 @@ func TestAccSonarqubePermissionGroupName(t *testing.T) {
 func testAccSonarqubePermissionLoginNameConfig(id string, loginName string, permissions []string) string {
 	formattedPermissions := generateHCLList(permissions)
 	return fmt.Sprintf(`
-		resource "sonarqube_user" "%[1]s" {
-			login_name = "%[2]s"
-			name       = "%[2]s"
-			password   = "secret-sauce37!"
-		}
-
-		resource "sonarqube_permissions" "%[1]s" {
-		  	login_name  = sonarqube_user.%[1]s.name
-		  	permissions = %[3]s
-		}
-		`, id, loginName, formattedPermissions)
+	resource "sonarqube_user" "%[1]s" {
+	login_name = "%[2]s"
+	name       = "%[2]s"
+	password   = "secret-sauce37!"
+	}
+	
+	resource "sonarqube_permissions" "%[1]s" {
+	login_name  = sonarqube_user.%[1]s.name
+	permissions = %[3]s
+	}
+	`, id, loginName, formattedPermissions)
 }
 
 func TestAccSonarqubePermissionLoginName(t *testing.T) {
@@ -88,7 +88,7 @@ func TestAccSonarqubePermissionLoginName(t *testing.T) {
 				Config: testAccSonarqubePermissionLoginNameConfig(rnd, "testAccSonarqubePermissions", permissions),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(name, "login_name", "testAccSonarqubePermissions"),
-					//resource.TestCheckResourceAttr(name, "permissions", generateHCLList(permissions)),
+				//resource.TestCheckResourceAttr(name, "permissions", generateHCLList(permissions)),
 				),
 			},
 		},
@@ -98,21 +98,21 @@ func TestAccSonarqubePermissionLoginName(t *testing.T) {
 func testAccSonarqubePermissionLoginNameTemplateNameConfig(id string, loginName string, permissions []string) string {
 	formattedPermissions := generateHCLList(permissions)
 	return fmt.Sprintf(`
-		resource "sonarqube_user" "%[1]s" {
-			login_name = "%[2]s"
-			name       = "%[2]s"
-			password   = "secret-sauce37!"
-		}
-
-		resource "sonarqube_permission_template" "this" {
-			name = "foo"
-		}
-		resource "sonarqube_permissions" "%[1]s" {
-		  	login_name    = sonarqube_user.%[1]s.name
-			template_name = sonarqube_permission_template.this.name
-		  	permissions   = %[3]s
-		}
-		`, id, loginName, formattedPermissions)
+	resource "sonarqube_user" "%[1]s" {
+	login_name = "%[2]s"
+	name       = "%[2]s"
+	password   = "secret-sauce37!"
+	}
+	
+	resource "sonarqube_permission_template" "this" {
+	name = "foo"
+	}
+	resource "sonarqube_permissions" "%[1]s" {
+	login_name    = sonarqube_user.%[1]s.name
+	template_name = sonarqube_permission_template.this.name
+	permissions   = %[3]s
+	}
+	`, id, loginName, formattedPermissions)
 }
 
 func TestAccSonarqubePermissionLoginNameTemplateName(t *testing.T) {

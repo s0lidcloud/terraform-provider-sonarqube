@@ -21,9 +21,9 @@ func testSweepSonarqubeNewCodePeriods(r string) error {
 
 func testAccSonarqubeNewCodePeriodsGlobalPreviousVersion(rnd string) string {
 	return fmt.Sprintf(`
-        resource "sonarqube_new_code_periods" "%[1]s" {
-			type = "PREVIOUS_VERSION"
-        }`, rnd)
+	resource "sonarqube_new_code_periods" "%[1]s" {
+	type = "PREVIOUS_VERSION"
+	}`, rnd)
 }
 
 func TestAccSonarqubeNewCodePeriodsGlobalPreviousVersion(t *testing.T) {
@@ -46,10 +46,10 @@ func TestAccSonarqubeNewCodePeriodsGlobalPreviousVersion(t *testing.T) {
 
 func testAccSonarqubeNewCodePeriodsGlobalNumberOfDays(rnd string) string {
 	return fmt.Sprintf(`
-        resource "sonarqube_new_code_periods" "%[1]s" {
-			type = "NUMBER_OF_DAYS"
-			value = "5"
-        }`, rnd)
+	resource "sonarqube_new_code_periods" "%[1]s" {
+	type = "NUMBER_OF_DAYS"
+	value = "5"
+	}`, rnd)
 }
 
 func TestAccSonarqubeNewCodePeriodsGlobalNumberOfDays(t *testing.T) {
@@ -73,17 +73,17 @@ func TestAccSonarqubeNewCodePeriodsGlobalNumberOfDays(t *testing.T) {
 
 func testAccSonarqubeNewCodePeriodsBranchPreviousVersion(rnd string) string {
 	return fmt.Sprintf(`
-	    resource "sonarqube_project" "%[1]s" {
-			name = "%[1]s"
-			project = "%[1]s"
-			visibility = "public"
-		}
-
-        resource "sonarqube_new_code_periods" "%[1]s" {
-			branch = "main"
-			project = sonarqube_project.%[1]s.project
-			type = "PREVIOUS_VERSION"
-        }`, rnd)
+	resource "sonarqube_project" "%[1]s" {
+	name = "%[1]s"
+	project = "%[1]s"
+	visibility = "public"
+	}
+	
+	resource "sonarqube_new_code_periods" "%[1]s" {
+	branch = "main"
+	project = sonarqube_project.%[1]s.project
+	type = "PREVIOUS_VERSION"
+	}`, rnd)
 }
 
 func TestAccSonarqubeNewCodePeriodsBranchPreviousVersion(t *testing.T) {
@@ -108,18 +108,18 @@ func TestAccSonarqubeNewCodePeriodsBranchPreviousVersion(t *testing.T) {
 
 func testAccSonarqubeNewCodePeriodsBranchNumberOfDays(rnd string) string {
 	return fmt.Sprintf(`
-	    resource "sonarqube_project" "%[1]s" {
-			name = "%[1]s"
-			project = "%[1]s"
-			visibility = "public"
-		}
-
-        resource "sonarqube_new_code_periods" "%[1]s" {
-			branch = "main"
-			project = sonarqube_project.%[1]s.project
-			type = "NUMBER_OF_DAYS"
-			value = "5"
-        }`, rnd)
+	resource "sonarqube_project" "%[1]s" {
+	name = "%[1]s"
+	project = "%[1]s"
+	visibility = "public"
+	}
+	
+	resource "sonarqube_new_code_periods" "%[1]s" {
+	branch = "main"
+	project = sonarqube_project.%[1]s.project
+	type = "NUMBER_OF_DAYS"
+	value = "5"
+	}`, rnd)
 }
 
 func TestAccSonarqubeNewCodePeriodsBranchNumberOfDays(t *testing.T) {
@@ -182,18 +182,18 @@ func TestAccSonarqubeNewCodePeriodsBranchNumberOfDays(t *testing.T) {
 
 func testAccSonarqubeNewCodePeriodsBranchReferenceBranch(rnd string) string {
 	return fmt.Sprintf(`
-	    resource "sonarqube_project" "%[1]s" {
-			name = "%[1]s"
-			project = "%[1]s"
-			visibility = "public"
-		}
-
-        resource "sonarqube_new_code_periods" "%[1]s" {
-			branch = "main"
-			project = sonarqube_project.%[1]s.project
-			type = "REFERENCE_BRANCH"
-			value = "development"
-        }`, rnd)
+	resource "sonarqube_project" "%[1]s" {
+	name = "%[1]s"
+	project = "%[1]s"
+	visibility = "public"
+	}
+	
+	resource "sonarqube_new_code_periods" "%[1]s" {
+	branch = "main"
+	project = sonarqube_project.%[1]s.project
+	type = "REFERENCE_BRANCH"
+	value = "development"
+	}`, rnd)
 }
 
 func TestAccSonarqubeNewCodePeriodsBranchReferenceBranch(t *testing.T) {
@@ -219,16 +219,16 @@ func TestAccSonarqubeNewCodePeriodsBranchReferenceBranch(t *testing.T) {
 
 func testAccSonarqubeNewCodePeriodsProjectPreviousVersion(rnd string) string {
 	return fmt.Sprintf(`
-	    resource "sonarqube_project" "%[1]s" {
-			name = "%[1]s"
-			project = "%[1]s"
-			visibility = "public"
-		}
-
-        resource "sonarqube_new_code_periods" "%[1]s" {
-			project = sonarqube_project.%[1]s.project
-			type = "PREVIOUS_VERSION"
-        }`, rnd)
+	resource "sonarqube_project" "%[1]s" {
+	name = "%[1]s"
+	project = "%[1]s"
+	visibility = "public"
+	}
+	
+	resource "sonarqube_new_code_periods" "%[1]s" {
+	project = sonarqube_project.%[1]s.project
+	type = "PREVIOUS_VERSION"
+	}`, rnd)
 }
 
 func TestAccSonarqubeNewCodePeriodsProjectPreviousVersion(t *testing.T) {
@@ -252,17 +252,17 @@ func TestAccSonarqubeNewCodePeriodsProjectPreviousVersion(t *testing.T) {
 
 func testAccSonarqubeNewCodePeriodsProjectNumberOfDays(rnd string) string {
 	return fmt.Sprintf(`
-	    resource "sonarqube_project" "%[1]s" {
-			name = "%[1]s"
-			project = "%[1]s"
-			visibility = "public"
-		}
-
-        resource "sonarqube_new_code_periods" "%[1]s" {
-			project = sonarqube_project.%[1]s.project
-			type = "NUMBER_OF_DAYS"
-			value = "5"
-        }`, rnd)
+	resource "sonarqube_project" "%[1]s" {
+	name = "%[1]s"
+	project = "%[1]s"
+	visibility = "public"
+	}
+	
+	resource "sonarqube_new_code_periods" "%[1]s" {
+	project = sonarqube_project.%[1]s.project
+	type = "NUMBER_OF_DAYS"
+	value = "5"
+	}`, rnd)
 }
 
 func TestAccSonarqubeNewCodePeriodsProjectNumberOfDays(t *testing.T) {
@@ -287,17 +287,17 @@ func TestAccSonarqubeNewCodePeriodsProjectNumberOfDays(t *testing.T) {
 
 func testAccSonarqubeNewCodePeriodsProjectReferenceProject(rnd string) string {
 	return fmt.Sprintf(`
-	    resource "sonarqube_project" "%[1]s" {
-			name = "%[1]s"
-			project = "%[1]s"
-			visibility = "public"
-		}
-
-        resource "sonarqube_new_code_periods" "%[1]s" {
-			project = sonarqube_project.%[1]s.project
-			type = "REFERENCE_BRANCH"
-			value = "development"
-        }`, rnd)
+	resource "sonarqube_project" "%[1]s" {
+	name = "%[1]s"
+	project = "%[1]s"
+	visibility = "public"
+	}
+	
+	resource "sonarqube_new_code_periods" "%[1]s" {
+	project = sonarqube_project.%[1]s.project
+	type = "REFERENCE_BRANCH"
+	value = "development"
+	}`, rnd)
 }
 
 func TestAccSonarqubeNewCodePeriodsProjectReferenceProject(t *testing.T) {

@@ -75,7 +75,7 @@ func resourceSonarqubeGroupCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return fmt.Errorf("error creating Sonarqube group: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	groupResponse := CreateGroupResponse{}
@@ -110,7 +110,7 @@ func resourceSonarqubeGroupRead(d *schema.ResourceData, m interface{}) error {
 		}
 		return fmt.Errorf("error reading Sonarqube group: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	readSuccess := false
 	// Decode response into struct
@@ -131,8 +131,8 @@ func resourceSonarqubeGroupRead(d *schema.ResourceData, m interface{}) error {
 				d.SetId(value.ID)
 			}
 			// If it does, set the values of that group
-			d.Set("name", value.Name)
-			d.Set("description", value.Description)
+			_ = d.Set("name", value.Name)
+			_ = d.Set("description", value.Description)
 			readSuccess = true
 			break
 		}
@@ -177,7 +177,7 @@ func resourceSonarqubeGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return fmt.Errorf("error updating Sonarqube group: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return resourceSonarqubeGroupRead(d, m)
 }
@@ -200,7 +200,7 @@ func resourceSonarqubeGroupDelete(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return fmt.Errorf("error deleting Sonarqube group: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

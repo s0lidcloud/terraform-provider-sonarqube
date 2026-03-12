@@ -9,14 +9,14 @@ import (
 
 func testAccSonarqubeQualityProfileDataSourceConfig(rnd string, name string, language string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_qualityprofile" "%[1]s" {
-			name     = "%[2]s"
-			language = "%[3]s"
-		}
+	resource "sonarqube_qualityprofile" "%[1]s" {
+	name     = "%[2]s"
+	language = "%[3]s"
+	}
 	
-		data "sonarqube_qualityprofile" "%[1]s" {
-			name = sonarqube_qualityprofile.%[1]s.id
-		}`, rnd, name, language)
+	data "sonarqube_qualityprofile" "%[1]s" {
+	name = sonarqube_qualityprofile.%[1]s.id
+	}`, rnd, name, language)
 }
 
 func TestAccSonarqubeQualityProfileDataSource(t *testing.T) {

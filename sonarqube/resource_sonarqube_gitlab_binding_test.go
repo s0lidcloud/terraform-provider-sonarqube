@@ -26,26 +26,26 @@ func testAccPreCheckGitlabBindingSupport(t *testing.T) {
 
 func testAccSonarqubeGitlabBindingName(rnd string, projName string, almSetting string, repoName string) string {
 	return fmt.Sprintf(`
-
-        resource "sonarqube_alm_gitlab" "%[1]s" {
-            personal_access_token       = "123456"
-            key    = "%[3]s"
-            url    = "https://gitlab.com/api/v4"
-        }
-
-        resource "sonarqube_project" "%[1]s" {
-            name       = "%[2]s"
-            project    = "%[2]s"
-            visibility = "public"
-        }
-
-        resource "sonarqube_gitlab_binding" "%[1]s" {
-            alm_setting   = "%[3]s"
-            monorepo     = "false"
-            project = sonarqube_project.%[1]s.project
-            repository   = "%[4]s"
-            depends_on = [sonarqube_alm_gitlab.%[1]s]
-        }`, rnd, projName, almSetting, repoName)
+	
+	resource "sonarqube_alm_gitlab" "%[1]s" {
+	personal_access_token       = "123456"
+	key    = "%[3]s"
+	url    = "https://gitlab.com/api/v4"
+	}
+	
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[2]s"
+	project    = "%[2]s"
+	visibility = "public"
+	}
+	
+	resource "sonarqube_gitlab_binding" "%[1]s" {
+	alm_setting   = "%[3]s"
+	monorepo     = "false"
+	project = sonarqube_project.%[1]s.project
+	repository   = "%[4]s"
+	depends_on = [sonarqube_alm_gitlab.%[1]s]
+	}`, rnd, projName, almSetting, repoName)
 }
 
 func TestAccSonarqubeGitlabBindingName(t *testing.T) {

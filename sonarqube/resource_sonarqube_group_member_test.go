@@ -21,22 +21,22 @@ func testSweepSonarqubeGroupMemberSweeper(r string) error {
 
 func testAccSonarqubeGroupMemberBasicConfig(rnd string, groupName string, loginName string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_user" "%[1]s_user" {
-			login_name = "%[3]s"
-			name       = "Test User"
-			email      = "terraform-test@sonarqube.com"
-			password   = "secret-sauce!"
-		}
-
-		resource "sonarqube_group" "%[1]s_group" {
-			name        = "%[2]s"
-		}
-
-		resource "sonarqube_group_member" "%[1]s" {
-			name       = sonarqube_group.%[1]s_group.name
-			login_name = sonarqube_user.%[1]s_user.login_name
-		}
-		`, rnd, groupName, loginName)
+	resource "sonarqube_user" "%[1]s_user" {
+	login_name = "%[3]s"
+	name       = "Test User"
+	email      = "terraform-test@sonarqube.com"
+	password   = "secret-sauce!"
+	}
+	
+	resource "sonarqube_group" "%[1]s_group" {
+	name        = "%[2]s"
+	}
+	
+	resource "sonarqube_group_member" "%[1]s" {
+	name       = sonarqube_group.%[1]s_group.name
+	login_name = sonarqube_user.%[1]s_user.login_name
+	}
+	`, rnd, groupName, loginName)
 }
 
 func TestAccSonarqubeGroupMemberBasic(t *testing.T) {

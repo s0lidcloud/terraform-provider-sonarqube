@@ -90,7 +90,7 @@ func resourceSonarqubeWebhookCreate(d *schema.ResourceData, m interface{}) error
 	if err != nil {
 		return fmt.Errorf("resourceWebhookCreate: Failed to call %s: %+v", sonarQubeURL.Path, err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	webhookResponse := CreateWebhookResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&webhookResponse)
@@ -130,7 +130,7 @@ func resourceSonarqubeWebhookRead(d *schema.ResourceData, m interface{}) error {
 		}
 		return fmt.Errorf("resourceWebhookRead: Failed to call %s: %+v", sonarQubeURL.Path, err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	webhookResponse := ListWebhooksResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&webhookResponse)
@@ -141,16 +141,16 @@ func resourceSonarqubeWebhookRead(d *schema.ResourceData, m interface{}) error {
 	for _, webhook := range webhookResponse.Webhooks {
 		log.Printf("[DEBUG][resourceSonarqubeWebhookRead] webhook.Key: '%s' vs %s ", webhook.Key, d.Id())
 		if webhook.Key == d.Id() {
-			d.Set("name", webhook.Name)
-			d.Set("url", webhook.Url)
+			_ = d.Set("name", webhook.Name)
+			_ = d.Set("url", webhook.Url)
 			// Field 'project' is not included in the webhook response object, so it is imported from the parameter.
 			if project, ok := d.GetOk("project"); ok {
-				d.Set("project", project.(string))
+				_ = d.Set("project", project.(string))
 			}
 			// Version 10.1 of sonarqube does not return the secret in the api response anymore. Field 'secret' replaced by flag 'hasSecret' in response
 			// Instead we just set the secret in state to the value being passed in to avoid constant drifts
 			if secret, ok := d.GetOk("secret"); ok {
-				d.Set("secret", secret.(string))
+				_ = d.Set("secret", secret.(string))
 			}
 			return nil
 		}
@@ -188,7 +188,7 @@ func resourceSonarqubeWebhookUpdate(d *schema.ResourceData, m interface{}) error
 	if err != nil {
 		return fmt.Errorf("resourceWebhookUpdate: Failed to update webhook: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return resourceSonarqubeWebhookRead(d, m)
 }
@@ -211,7 +211,7 @@ func resourceSonarqubeWebhookDelete(d *schema.ResourceData, m interface{}) error
 	if err != nil {
 		return fmt.Errorf("resourceWebhookDelete: Failed to delete webhook: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -222,7 +222,7 @@ func resourceSonarqubeWebhookImport(d *schema.ResourceData, m interface{}) ([]*s
 
 	if len(importIdComponents) == 2 {
 		log.Printf("[DEBUG][resourceSonarqubeWebhookImport] Import id: '%+v' is in format {key/project:%s/%s}", d.Id(), importIdComponents[0], importIdComponents[1])
-		d.Set("project", importIdComponents[1])
+		_ = d.Set("project", importIdComponents[1])
 	} else if len(importIdComponents) == 1 {
 		log.Printf("[DEBUG][resourceSonarqubeWebhookImport] Import id: '%+v' is in format {key:%s}", d.Id(), importIdComponents[0])
 	} else {

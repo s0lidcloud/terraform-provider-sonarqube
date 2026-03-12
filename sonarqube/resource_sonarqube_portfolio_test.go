@@ -28,53 +28,53 @@ func testAccPreCheckPortfolioSupport(t *testing.T) {
 
 func testAccSonarqubePortfolioBasicConfig(rnd string, key string, name string, description string, visibility string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_portfolio" "%[1]s" {
-		  key       = "%[2]s"
-		  name    = "%[3]s"
-		  description = "%[4]s"
-		  visibility = "%[5]s"
-		}
-		`, rnd, key, name, description, visibility)
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       = "%[2]s"
+	name    = "%[3]s"
+	description = "%[4]s"
+	visibility = "%[5]s"
+	}
+	`, rnd, key, name, description, visibility)
 }
 
 func testAccSonarqubePortfolioConfigSelectionMode(rnd string, key string, name string, description string, visibility string, selectionMode string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_portfolio" "%[1]s" {
-		  key       = "%[2]s"
-		  name    = "%[3]s"
-		  description = "%[4]s"
-		  visibility = "%[5]s"
-		  selection_mode = "%[6]s"
-		}
-		`, rnd, key, name, description, visibility, selectionMode)
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       = "%[2]s"
+	name    = "%[3]s"
+	description = "%[4]s"
+	visibility = "%[5]s"
+	selection_mode = "%[6]s"
+	}
+	`, rnd, key, name, description, visibility, selectionMode)
 }
 
 func testAccSonarqubePortfolioConfigSelectionModeTags(rnd string, key string, name string, description string, visibility string, selectionMode string, tags []string) string {
 	formattedTags := generateHCLList(tags)
 	return fmt.Sprintf(`
-		resource "sonarqube_portfolio" "%[1]s" {
-		  key       = "%[2]s"
-		  name    = "%[3]s"
-		  description = "%[4]s"
-		  visibility = "%[5]s"
-		  selection_mode = "%[6]s"
-		  tags = %[7]s // Note that the "" should be missing since this is a list
-		}
-		`, rnd, key, name, description, visibility, selectionMode, formattedTags)
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       = "%[2]s"
+	name    = "%[3]s"
+	description = "%[4]s"
+	visibility = "%[5]s"
+	selection_mode = "%[6]s"
+	tags = %[7]s // Note that the "" should be missing since this is a list
+	}
+	`, rnd, key, name, description, visibility, selectionMode, formattedTags)
 }
 
 func testAccSonarqubePortfolioConfigSelectionModeRegex(rnd string, key string, name string, description string, visibility string, selectionMode string, regexp string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_portfolio" "%[1]s" {
-		  key       = "%[2]s"
-		  name    = "%[3]s"
-		  description = "%[4]s"
-		  visibility = "%[5]s"
-		  selection_mode = "%[6]s"
-		  regexp = "%[7]s"
-
-		}
-		`, rnd, key, name, description, visibility, selectionMode, regexp)
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       = "%[2]s"
+	name    = "%[3]s"
+	description = "%[4]s"
+	visibility = "%[5]s"
+	selection_mode = "%[6]s"
+	regexp = "%[7]s"
+	
+	}
+	`, rnd, key, name, description, visibility, selectionMode, regexp)
 }
 
 func TestAccSonarqubePortfolioBasic(t *testing.T) {
@@ -364,25 +364,25 @@ func TestAccSonarqubePortfolioManualProjectsReplaceProject(t *testing.T) {
 	newProjectKey := "testAccSonarqubeProjectKeyNew"
 
 	configBefore := fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s" {
-		  name       = "%[3]s"
-		  project    = "%[3]s"
-		}
-		resource "sonarqube_portfolio" "%[1]s" {
-		  key       	= "%[2]s"
-		  name    		= "%[2]s"
-    		  description = "test"
-		  selection_mode = "MANUAL"
-		  selected_projects {
-			project_key = sonarqube_project.%[1]s.project
-			selected_branches = ["main"]
-		  }
-		}
-		`, rnd, portfolioKey, oldProjectKey)
-	configAfter := strings.Replace(
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[3]s"
+	project    = "%[3]s"
+	}
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       	= "%[2]s"
+	name    		= "%[2]s"
+	description = "test"
+	selection_mode = "MANUAL"
+	selected_projects {
+	project_key = sonarqube_project.%[1]s.project
+	selected_branches = ["main"]
+	}
+	}
+	`, rnd, portfolioKey, oldProjectKey)
+	configAfter := strings.ReplaceAll(
 		configBefore,
 		oldProjectKey,
-		newProjectKey, -1) // -1 => replace all occurences
+		newProjectKey) // -1 => replace all occurences
 
 	checks := map[string]resource.TestCheckFunc{
 		"before": resource.ComposeTestCheckFunc(
@@ -424,21 +424,21 @@ func TestAccSonarqubePortfolioManualProjectsRemoveSelectedBranches(t *testing.T)
 	projectKey := "testAccSonarqubeProjectKey"
 
 	configBefore := fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s" {
-		  name       = "%[3]s"
-		  project    = "%[3]s"
-		}
-		resource "sonarqube_portfolio" "%[1]s" {
-		  key       	= "%[2]s"
-		  name    		= "%[2]s"
-    		  description = "test"
-		  selection_mode = "MANUAL"
-		  selected_projects {
-			project_key = sonarqube_project.%[1]s.project
-			selected_branches = ["main"]
-		  }
-		}
-		`, rnd, portfolioKey, projectKey)
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[3]s"
+	project    = "%[3]s"
+	}
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       	= "%[2]s"
+	name    		= "%[2]s"
+	description = "test"
+	selection_mode = "MANUAL"
+	selected_projects {
+	project_key = sonarqube_project.%[1]s.project
+	selected_branches = ["main"]
+	}
+	}
+	`, rnd, portfolioKey, projectKey)
 	configAfter := strings.Replace(
 		configBefore,
 		"selected_branches",
@@ -485,43 +485,43 @@ func TestAccSonarqubePortfolioManualAddAndRemoveMultipleProjects(t *testing.T) {
 	secondProjectKey := "testAccSonarqubeProjectKeyNewSecond"
 
 	configBefore := fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s-1" {
-		  name       = "%[3]s"
-		  project    = "%[3]s"
-		}
-		resource "sonarqube_portfolio" "%[1]s" {
-		  key       	= "%[2]s"
-		  name    		= "%[2]s"
-    		  description = "test"
-		  selection_mode = "MANUAL"
-		  selected_projects {
-			project_key = sonarqube_project.%[1]s-1.project
-		  }
-		}
-		`, rnd, portfolioKey, firstProjectKey, secondProjectKey)
+	resource "sonarqube_project" "%[1]s-1" {
+	name       = "%[3]s"
+	project    = "%[3]s"
+	}
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       	= "%[2]s"
+	name    		= "%[2]s"
+	description = "test"
+	selection_mode = "MANUAL"
+	selected_projects {
+	project_key = sonarqube_project.%[1]s-1.project
+	}
+	}
+	`, rnd, portfolioKey, firstProjectKey, secondProjectKey)
 	// Add a second project to the portfolio
 	configAfter := fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s-1" {
-		  name       = "%[3]s"
-		  project    = "%[3]s"
-		}
-		resource "sonarqube_project" "%[1]s-2" {
-			name       = "%[4]s"
-			project    = "%[4]s"
-		  }
-		resource "sonarqube_portfolio" "%[1]s" {
-		  key       	= "%[2]s"
-		  name    		= "%[2]s"
-    		  description = "test"
-		  selection_mode = "MANUAL"
-		  selected_projects {
-			project_key = sonarqube_project.%[1]s-1.project
-		  }
-		  selected_projects {
-			project_key = sonarqube_project.%[1]s-2.project
-		  }
-		}
-		`, rnd, portfolioKey, firstProjectKey, secondProjectKey)
+	resource "sonarqube_project" "%[1]s-1" {
+	name       = "%[3]s"
+	project    = "%[3]s"
+	}
+	resource "sonarqube_project" "%[1]s-2" {
+	name       = "%[4]s"
+	project    = "%[4]s"
+	}
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       	= "%[2]s"
+	name    		= "%[2]s"
+	description = "test"
+	selection_mode = "MANUAL"
+	selected_projects {
+	project_key = sonarqube_project.%[1]s-1.project
+	}
+	selected_projects {
+	project_key = sonarqube_project.%[1]s-2.project
+	}
+	}
+	`, rnd, portfolioKey, firstProjectKey, secondProjectKey)
 
 	checks := map[string]resource.TestCheckFunc{
 		"before": resource.ComposeTestCheckFunc(
@@ -568,21 +568,21 @@ func TestAccSonarqubePortfolioManualImport(t *testing.T) {
 	projectKey := "testAccSonarqubeProjectKey"
 
 	config := fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s" {
-		  name       = "%[3]s"
-		  project    = "%[3]s"
-		}
-		resource "sonarqube_portfolio" "%[1]s" {
-		  key       	= "%[2]s"
-		  name    		= "%[2]s"
-    		  description = "test"
-		  selection_mode = "MANUAL"
-		  selected_projects {
-			project_key = sonarqube_project.%[1]s.project
-			selected_branches = ["main"]
-		  }
-		}
-		`, rnd, portfolioKey, projectKey)
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[3]s"
+	project    = "%[3]s"
+	}
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       	= "%[2]s"
+	name    		= "%[2]s"
+	description = "test"
+	selection_mode = "MANUAL"
+	selected_projects {
+	project_key = sonarqube_project.%[1]s.project
+	selected_branches = ["main"]
+	}
+	}
+	`, rnd, portfolioKey, projectKey)
 
 	checks := resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(name, "selected_projects.#", "1"),

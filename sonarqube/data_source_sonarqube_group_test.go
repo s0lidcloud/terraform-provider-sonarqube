@@ -9,14 +9,14 @@ import (
 
 func testAccSonarqubeGroupDataSourceConfig(rnd string, name string, description string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_group" "%[1]s" {
-			name        = "%[2]s"
-			description = "%[3]s"
-		}
-		
-		data "sonarqube_group" "%[1]s" {
-			name = sonarqube_group.%[1]s.name
-		}`, rnd, name, description)
+	resource "sonarqube_group" "%[1]s" {
+	name        = "%[2]s"
+	description = "%[3]s"
+	}
+	
+	data "sonarqube_group" "%[1]s" {
+	name = sonarqube_group.%[1]s.name
+	}`, rnd, name, description)
 }
 
 func TestAccSonarqubeGroupDataSource(t *testing.T) {

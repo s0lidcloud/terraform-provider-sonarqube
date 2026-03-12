@@ -21,16 +21,16 @@ func testSweepSonarqubeProjectMainBranchSweeper(r string) error {
 
 func testAccSonarqubeProjectMainBranchName(rnd string, projName string, branchName string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s" {
-			name       = "%[2]s"
-			project    = "%[2]s"
-			visibility = "public"
-		}
-
-		resource "sonarqube_project_main_branch" "%[1]s" {
-			name   = "%[3]s"
-			project = sonarqube_project.%[1]s.project
-		}`, rnd, projName, branchName)
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[2]s"
+	project    = "%[2]s"
+	visibility = "public"
+	}
+	
+	resource "sonarqube_project_main_branch" "%[1]s" {
+	name   = "%[3]s"
+	project = sonarqube_project.%[1]s.project
+	}`, rnd, projName, branchName)
 }
 
 func TestAccSonarqubeProjectMainBranchName(t *testing.T) {

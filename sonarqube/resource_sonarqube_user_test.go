@@ -20,12 +20,12 @@ func testSweepSonarqubeUserSweeper(r string) error {
 
 func testAccSonarqubeUserLocalConfig(rnd string, name string, email string, password string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_user" "%[1]s" {
-			login_name = "%[2]s"
-			name       = "%[2]s"
-			email      = "%[3]s"
-			password   = "%[4]s"
-		}`, rnd, name, email, password)
+	resource "sonarqube_user" "%[1]s" {
+	login_name = "%[2]s"
+	name       = "%[2]s"
+	email      = "%[3]s"
+	password   = "%[4]s"
+	}`, rnd, name, email, password)
 }
 
 func TestAccSonarqubeUserLocal(t *testing.T) {
@@ -65,12 +65,12 @@ func TestAccSonarqubeUserLocal(t *testing.T) {
 
 func testAccSonarqubeUserNotLocalConfig(rnd string, name string, email string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_user" "%[1]s" {
-			login_name = "%[2]s"
-			name       = "%[2]s"
-			email      = "%[3]s"
-			is_local   = false
-	    }`, rnd, name, email)
+	resource "sonarqube_user" "%[1]s" {
+	login_name = "%[2]s"
+	name       = "%[2]s"
+	email      = "%[3]s"
+	is_local   = false
+	}`, rnd, name, email)
 }
 
 func TestAccSonarqubeUserNotLocal(t *testing.T) {

@@ -81,12 +81,12 @@ func TestAccSonarqubeWebhookUpdate(t *testing.T) {
 
 func testAccSonarqubeWebhookBasicConfig(rnd, name, url, secret string) string {
 	return fmt.Sprintf(`
-resource "sonarqube_webhook" "%s" {
+	resource "sonarqube_webhook" "%s" {
 	name   = "%s"
 	url    = "%s"
 	secret = "%s"
-}
-`, rnd, name, url, secret)
+	}
+	`, rnd, name, url, secret)
 }
 
 func TestAccSonarqubeWebhookProjectBasic(t *testing.T) {
@@ -132,15 +132,15 @@ func testAccSonarqubeWebhookProjectImportID(resourceNode string) resource.Import
 
 func testAccSonarqubeWebhookProjectBasicConfig(rnd string, name string, url string, project string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s" {
-			name       = "%[4]s"
-			project    = "%[4]s"
-			visibility = "public" 
-		}
-
-		resource "sonarqube_webhook" "%[1]s" {
-			name    = "%[2]s"
-			url     = "%[3]s"
-			project = sonarqube_project.%[1]s.project
-		}`, rnd, name, url, project)
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[4]s"
+	project    = "%[4]s"
+	visibility = "public" 
+	}
+	
+	resource "sonarqube_webhook" "%[1]s" {
+	name    = "%[2]s"
+	url     = "%[3]s"
+	project = sonarqube_project.%[1]s.project
+	}`, rnd, name, url, project)
 }

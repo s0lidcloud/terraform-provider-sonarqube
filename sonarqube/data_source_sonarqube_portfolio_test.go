@@ -9,49 +9,49 @@ import (
 
 func testAccSonarqubePortfolioDataSourceConfig(rnd string, key string, name string, description string, visibility string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_portfolio" "%[1]s" {
-			key       = "%[2]s"
-			name    = "%[3]s"
-			description = "%[4]s"
-			visibility = "%[5]s"
-		}
-		data "sonarqube_portfolio" "%[1]s" {
-			key = sonarqube_portfolio.%[1]s.id
-		}
-		`, rnd, key, name, description, visibility)
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       = "%[2]s"
+	name    = "%[3]s"
+	description = "%[4]s"
+	visibility = "%[5]s"
+	}
+	data "sonarqube_portfolio" "%[1]s" {
+	key = sonarqube_portfolio.%[1]s.id
+	}
+	`, rnd, key, name, description, visibility)
 }
 
 func testAccSonarqubePortfolioDataSourceConfigTags(rnd string, key string, name string, description string, visibility string, tags []string) string {
 	formattedTags := generateHCLList(tags)
 	return fmt.Sprintf(`
-		resource "sonarqube_portfolio" "%[1]s" {
-			key       = "%[2]s"
-			name    = "%[3]s"
-			description = "%[4]s"
-			visibility = "%[5]s"
-			selection_mode = "TAGS"
-			tags = %[6]s // Note that the "" should be missing since this is a list
-		}
-		data "sonarqube_portfolio" "%[1]s" {
-			key = sonarqube_portfolio.%[1]s.id
-		}
-		`, rnd, key, name, description, visibility, formattedTags)
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       = "%[2]s"
+	name    = "%[3]s"
+	description = "%[4]s"
+	visibility = "%[5]s"
+	selection_mode = "TAGS"
+	tags = %[6]s // Note that the "" should be missing since this is a list
+	}
+	data "sonarqube_portfolio" "%[1]s" {
+	key = sonarqube_portfolio.%[1]s.id
+	}
+	`, rnd, key, name, description, visibility, formattedTags)
 }
 
 func testAccSonarqubePortfolioDataSourceConfigRegex(rnd string, key string, name string, description string, visibility string, regexp string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_portfolio" "%[1]s" {
-			key       = "%[2]s"
-			name    = "%[3]s"
-			description = "%[4]s"
-			visibility = "%[5]s"
-			selection_mode = "REGEXP"
-			regexp = "%[6]s"
-		}
-		data "sonarqube_portfolio" "%[1]s" {
-			key = sonarqube_portfolio.%[1]s.id
-		}
-		`, rnd, key, name, description, visibility, regexp)
+	resource "sonarqube_portfolio" "%[1]s" {
+	key       = "%[2]s"
+	name    = "%[3]s"
+	description = "%[4]s"
+	visibility = "%[5]s"
+	selection_mode = "REGEXP"
+	regexp = "%[6]s"
+	}
+	data "sonarqube_portfolio" "%[1]s" {
+	key = sonarqube_portfolio.%[1]s.id
+	}
+	`, rnd, key, name, description, visibility, regexp)
 }
 
 func TestAccSonarqubePortfolioDataSource(t *testing.T) {

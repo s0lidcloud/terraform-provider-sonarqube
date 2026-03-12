@@ -26,30 +26,30 @@ func testAccPreCheckGithubBindingSupport(t *testing.T) {
 
 func testAccSonarqubeGithubBindingName(rnd string, projName string, almSetting string, repoName string) string {
 	return fmt.Sprintf(`
-		
-		resource "sonarqube_alm_github" "%[1]s" {
-			app_id       = "12345"
-			client_id    = "56789"
-			client_secret    = "secret"
-			key    = "%[3]s"
-			private_key    = "myprivate_key"
-			url    = "https://api.github.com"
-			webhook_secret = "mysecret"
-		}
-
-		resource "sonarqube_project" "%[1]s" {
-			name       = "%[2]s"
-			project    = "%[2]s"
-			visibility = "public"
-		}
-		resource "sonarqube_github_binding" "%[1]s" {
-			alm_setting   = "%[3]s"
-			monorepo     = "false"
-			project = sonarqube_project.%[1]s.project
-			repository   = "%[4]s"
-			summary_comment_enabled = "true"
-		    depends_on = [sonarqube_alm_github.%[1]s]
-		}`, rnd, projName, almSetting, repoName)
+	
+	resource "sonarqube_alm_github" "%[1]s" {
+	app_id       = "12345"
+	client_id    = "56789"
+	client_secret    = "secret"
+	key    = "%[3]s"
+	private_key    = "myprivate_key"
+	url    = "https://api.github.com"
+	webhook_secret = "mysecret"
+	}
+	
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[2]s"
+	project    = "%[2]s"
+	visibility = "public"
+	}
+	resource "sonarqube_github_binding" "%[1]s" {
+	alm_setting   = "%[3]s"
+	monorepo     = "false"
+	project = sonarqube_project.%[1]s.project
+	repository   = "%[4]s"
+	summary_comment_enabled = "true"
+	depends_on = [sonarqube_alm_github.%[1]s]
+	}`, rnd, projName, almSetting, repoName)
 }
 
 func TestAccSonarqubeGithubBindingName(t *testing.T) {

@@ -23,39 +23,39 @@ func testSweepSonarqubeProjectSweeper(r string) error {
 
 func testAccSonarqubeProjectBasicConfig(rnd string, name string, project string, visibility string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s" {
-		  name       = "%[2]s"
-		  project    = "%[3]s"
-		  visibility = "%[4]s"
-		}
-		`, rnd, name, project, visibility)
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[2]s"
+	project    = "%[3]s"
+	visibility = "%[4]s"
+	}
+	`, rnd, name, project, visibility)
 }
 
 func testAccSonarqubeProjectTagsConfig(rnd string, name string, project string, visibility string, tags []string) string {
 	formattedTags := generateHCLList(tags)
 	return fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s" {
-		  name       = "%[2]s"
-		  project    = "%[3]s"
-		  visibility = "%[4]s"
-		  tags 		 = %[5]s // Note that the "" should be missing since this is a list
-		}
-		`, rnd, name, project, visibility, formattedTags)
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[2]s"
+	project    = "%[3]s"
+	visibility = "%[4]s"
+	tags 		 = %[5]s // Note that the "" should be missing since this is a list
+	}
+	`, rnd, name, project, visibility, formattedTags)
 }
 
 func testAccSonarqubeProjectSettingsConfig(rnd string, name string, project string, visibility string, value string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_project" "%[1]s" {
-		  name       = "%[2]s"
-		  project    = "%[3]s"
-		  visibility = "%[4]s"
-
-		  setting {
-			key   = "sonar.docker.activate"
-			value = "%[5]s"
-		  }
-		}
-		`, rnd, name, project, visibility, value)
+	resource "sonarqube_project" "%[1]s" {
+	name       = "%[2]s"
+	project    = "%[3]s"
+	visibility = "%[4]s"
+	
+	setting {
+	key   = "sonar.docker.activate"
+	value = "%[5]s"
+	}
+	}
+	`, rnd, name, project, visibility, value)
 }
 
 func testAccSonarqubeProjectSettingsMultiple(rnd string, key string, name string, values []string, fields map[string]string) string {
@@ -63,24 +63,24 @@ func testAccSonarqubeProjectSettingsMultiple(rnd string, key string, name string
 	formattedFields := generateHCLMap(fields)
 	return fmt.Sprintf(`
 	resource "sonarqube_project" "%[1]s" {
-		name       = "%[2]s"
-		project    = "%[3]s"
-		visibility = "public"
-
-		setting {
-			key   = "sonar.terraform.activate"
-			value = "true"
-		}
-
-		setting {
-			key    = "sonar.terraform.file.suffixes"
-			values = %[4]s
-		}
-
-		setting {
-			key          = "sonar.issue.ignore.multicriteria"
-			field_values = [%[5]s]
-		}
+	name       = "%[2]s"
+	project    = "%[3]s"
+	visibility = "public"
+	
+	setting {
+	key   = "sonar.terraform.activate"
+	value = "true"
+	}
+	
+	setting {
+	key    = "sonar.terraform.file.suffixes"
+	values = %[4]s
+	}
+	
+	setting {
+	key          = "sonar.issue.ignore.multicriteria"
+	field_values = [%[5]s]
+	}
 	
 	}
 	`, rnd, key, name, formattedValues, formattedFields)

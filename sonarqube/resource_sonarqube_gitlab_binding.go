@@ -75,7 +75,7 @@ func resourceSonarqubeGitlabBindingCreate(d *schema.ResourceData, m interface{})
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	id := fmt.Sprintf("%v/%v", d.Get("project").(string), d.Get("repository").(string))
 	d.SetId(id)
@@ -109,7 +109,7 @@ func resourceSonarqubeGitlabBindingRead(d *schema.ResourceData, m interface{}) e
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	BindingReadResponse := GetBinding{}
@@ -119,10 +119,10 @@ func resourceSonarqubeGitlabBindingRead(d *schema.ResourceData, m interface{}) e
 	}
 	// Loop over all branches to see if the main branch we need exists.
 	if idSlice[1] == BindingReadResponse.Repository && BindingReadResponse.Alm == "gitlab" {
-		d.Set("project", idSlice[0])
-		d.Set("repository", idSlice[1])
-		d.Set("alm_setting", BindingReadResponse.Key)
-		d.Set("monorepo", strconv.FormatBool(BindingReadResponse.Monorepo))
+		_ = d.Set("project", idSlice[0])
+		_ = d.Set("repository", idSlice[1])
+		_ = d.Set("alm_setting", BindingReadResponse.Key)
+		_ = d.Set("monorepo", strconv.FormatBool(BindingReadResponse.Monorepo))
 
 		return nil
 	}
@@ -152,7 +152,7 @@ func resourceSonarqubeGitlabBindingDelete(d *schema.ResourceData, m interface{})
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

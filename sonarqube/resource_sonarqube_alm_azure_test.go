@@ -21,12 +21,12 @@ func testSweepSonarqubeAlmAzure(r string) error {
 
 func testAccSonarqubeAlmAzureName(rnd string, name string, url string) string {
 	return fmt.Sprintf(`
-		
-		resource "sonarqube_alm_azure" "%[1]s" {
-			key    = "%[2]s"
-			personal_access_token    = "my_pat"
-			url    = "%[3]s"
-		}`, rnd, name, url)
+	
+	resource "sonarqube_alm_azure" "%[1]s" {
+	key    = "%[2]s"
+	personal_access_token    = "my_pat"
+	url    = "%[3]s"
+	}`, rnd, name, url)
 }
 
 func TestAccSonarqubeAlmAzureName(t *testing.T) {

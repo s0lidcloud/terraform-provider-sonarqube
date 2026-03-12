@@ -76,7 +76,7 @@ func resourceSonarqubeAlmAzureCreate(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	d.SetId(d.Get("key").(string))
 
@@ -101,7 +101,7 @@ func resourceSonarqubeAlmAzureRead(d *schema.ResourceData, m interface{}) error 
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	AlmAzureReadResponse := GetAlmAzure{}
@@ -112,8 +112,8 @@ func resourceSonarqubeAlmAzureRead(d *schema.ResourceData, m interface{}) error 
 	// Loop over all Azure instances to see if the Alm instance exists.
 	for _, value := range AlmAzureReadResponse.Azure {
 		if d.Id() == value.Key {
-			d.Set("key", value.Key)
-			d.Set("url", value.URL)
+			_ = d.Set("key", value.Key)
+			_ = d.Set("url", value.URL)
 			return nil
 		}
 	}
@@ -141,7 +141,7 @@ func resourceSonarqubeAlmAzureUpdate(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return resourceSonarqubeAlmAzureRead(d, m)
 }
@@ -163,7 +163,7 @@ func resourceSonarqubeAlmAzureDelete(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -183,7 +183,7 @@ func resourceSonarqubeAlmAzureImport(d *schema.ResourceData, m interface{}) ([]*
 	}
 
 	// Add personal_access_token from import id
-	d.Set("personal_access_token", importIdComponents[1])
+	_ = d.Set("personal_access_token", importIdComponents[1])
 
 	return []*schema.ResourceData{d}, nil
 }

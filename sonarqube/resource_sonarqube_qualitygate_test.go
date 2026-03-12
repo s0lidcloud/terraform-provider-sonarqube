@@ -28,16 +28,16 @@ func testSweepSonarqubeQualitygateSweeper(r string) error {
 
 func testAccSonarqubeQualitygateBasicConfig(rnd string, name string, is_default string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_qualitygate" "%[1]s" {
-			name = "%[2]s"
-			is_default = "%[3]s"
-
-			condition {
-				metric    = "new_coverage"
-				op        = "LT"
-				threshold = "50"
-			}
-		}`, rnd, name, is_default)
+	resource "sonarqube_qualitygate" "%[1]s" {
+	name = "%[2]s"
+	is_default = "%[3]s"
+	
+	condition {
+	metric    = "new_coverage"
+	op        = "LT"
+	threshold = "50"
+	}
+	}`, rnd, name, is_default)
 }
 
 // Add a basic quality gate
@@ -76,23 +76,23 @@ func TestAccSonarqubeQualitygateBasic(t *testing.T) {
 // Add a gate with multiple conditions and check tha the values are as expected.
 func testAccSonarqubeQualitygateWithConditionsConfig(rnd string, name string, is_default string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_qualitygate" "%[1]s" {
-			name = "%[2]s"
-			is_default = "%[3]s"
-
-			condition {
-				metric    = "new_coverage"
-				op        = "LT"
-				threshold = "50"
-			}
-
-			condition {
-				metric    = "reliability_rating"
-				op        = "GT"
-				threshold = "2"
-			}
-
-		}`, rnd, name, is_default)
+	resource "sonarqube_qualitygate" "%[1]s" {
+	name = "%[2]s"
+	is_default = "%[3]s"
+	
+	condition {
+	metric    = "new_coverage"
+	op        = "LT"
+	threshold = "50"
+	}
+	
+	condition {
+	metric    = "reliability_rating"
+	op        = "GT"
+	threshold = "2"
+	}
+	
+	}`, rnd, name, is_default)
 }
 
 func TestAccSonarqubeQualitygateConditions(t *testing.T) {
@@ -124,27 +124,27 @@ func TestAccSonarqubeQualitygateConditions(t *testing.T) {
 
 func testAccSonarqubeQualitygateChangeDefaultConfig(rnd string, name string, firstIsDefault bool, threshold2 string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_qualitygate" "%[1]s-1" {
-			name = "%[2]s-1"
-			is_default = "%[3]s"
-
-			condition {
-				metric    = "new_coverage"
-				op        = "LT"
-				threshold = "50"
-			}
-		}
-
-		resource "sonarqube_qualitygate" "%[1]s-2" {
-			name = "%[2]s-2"
-			is_default = "%[4]s"
-
-			condition {
-				metric    = "new_coverage"
-				op        = "LT"
-				threshold = "%[5]s"
-			}
-		}`, rnd, name, strconv.FormatBool(firstIsDefault), strconv.FormatBool(!firstIsDefault), threshold2)
+	resource "sonarqube_qualitygate" "%[1]s-1" {
+	name = "%[2]s-1"
+	is_default = "%[3]s"
+	
+	condition {
+	metric    = "new_coverage"
+	op        = "LT"
+	threshold = "50"
+	}
+	}
+	
+	resource "sonarqube_qualitygate" "%[1]s-2" {
+	name = "%[2]s-2"
+	is_default = "%[4]s"
+	
+	condition {
+	metric    = "new_coverage"
+	op        = "LT"
+	threshold = "%[5]s"
+	}
+	}`, rnd, name, strconv.FormatBool(firstIsDefault), strconv.FormatBool(!firstIsDefault), threshold2)
 }
 
 // Add two quality gates and then change which one is the default
@@ -191,16 +191,16 @@ func TestAccSonarqubeQualitygateChangeDefault(t *testing.T) {
 
 func testAccSonarqubeQualitygateDeleteDefaultConfig(rnd string, name string) string {
 	return fmt.Sprintf(`
-		resource "sonarqube_qualitygate" "%[1]s" {
-			name = "%[2]s"
-			is_default = "true"
-
-			condition {
-				metric    = "new_coverage"
-				op        = "LT"
-				threshold = "50"
-			}
-		}`, rnd, name)
+	resource "sonarqube_qualitygate" "%[1]s" {
+	name = "%[2]s"
+	is_default = "true"
+	
+	condition {
+	metric    = "new_coverage"
+	op        = "LT"
+	threshold = "50"
+	}
+	}`, rnd, name)
 }
 
 // Deleting a quality gate that was set as the default should set the built in Sonar way as the default
@@ -236,19 +236,19 @@ func TestAccSonarqubeQualitygateDeleteDefault(t *testing.T) {
 func testAccSonarqubeQualitygateCopyConfig(rnd string, baseName string, conditionName string, threshold string, op string, copyName string) string {
 	return fmt.Sprintf(`
 	resource "sonarqube_qualitygate" "%[2]s" {
-		name = "%[2]s"
-
-		condition {
-			metric    = "%[3]s"
-			threshold = "%[4]s"
-			op        = "%[5]s"
-		}
+	name = "%[2]s"
+	
+	condition {
+	metric    = "%[3]s"
+	threshold = "%[4]s"
+	op        = "%[5]s"
 	}
-
+	}
+	
 	resource "sonarqube_qualitygate" "%[1]s" {
-		depends_on = [sonarqube_qualitygate.%[2]s]
-		name = "%[6]s"
-		copy_from = "%[2]s"
+	depends_on = [sonarqube_qualitygate.%[2]s]
+	name = "%[6]s"
+	copy_from = "%[2]s"
 	}`, rnd, baseName, conditionName, threshold, op, copyName)
 }
 
@@ -298,7 +298,7 @@ func checkSonarWayIsDefault(s *terraform.State) error {
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("checkSonarWayIsDefault: Unexpected statusCode: %v", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	qualityGateReadResponse := GetQualityGate{}
 	err = json.NewDecoder(resp.Body).Decode(&qualityGateReadResponse)

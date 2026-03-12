@@ -273,7 +273,7 @@ func portfolioSetSelectionMode(d *schema.ResourceData, m interface{}, sonarQubeU
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// The rest of the options populate the portfolio in the "setMode" call. MANUAL portfolios needs to be manually populated afterwards
 	if selectionMode := d.Get("selection_mode").(string); selectionMode == MANUAL {
@@ -316,7 +316,7 @@ func resourceSonarqubePortfolioCreate(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	portfolioResponse := Portfolio{}
@@ -376,7 +376,7 @@ func resourceSonarqubePortfolioUpdate(d *schema.ResourceData, m interface{}) err
 		if err != nil {
 			return fmt.Errorf("error updating Sonarqube Portfolio Name and Description: %+v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 	}
 
 	if d.HasChanges("selection_mode", "branch", "tags", "regexp", "selected_projects") {
@@ -410,7 +410,7 @@ func resourceSonarqubePortfolioDelete(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -425,26 +425,26 @@ func resourceSonarqubePortfolioImport(d *schema.ResourceData, m interface{}) ([]
 func updateResourceDataFromPortfolioReadResponse(d *schema.ResourceData, portfolioReadResponse *Portfolio) {
 
 	d.SetId(portfolioReadResponse.Key)
-	d.Set("key", portfolioReadResponse.Key)
-	d.Set("name", portfolioReadResponse.Name)
-	d.Set("description", portfolioReadResponse.Desc)
-	d.Set("qualifier", portfolioReadResponse.Qualifier)
-	d.Set("visibility", portfolioReadResponse.Visibility)
-	d.Set("selection_mode", portfolioReadResponse.SelectionMode)
+	_ = d.Set("key", portfolioReadResponse.Key)
+	_ = d.Set("name", portfolioReadResponse.Name)
+	_ = d.Set("description", portfolioReadResponse.Desc)
+	_ = d.Set("qualifier", portfolioReadResponse.Qualifier)
+	_ = d.Set("visibility", portfolioReadResponse.Visibility)
+	_ = d.Set("selection_mode", portfolioReadResponse.SelectionMode)
 
 	// These fields may or may not be set in the reposnse from SonarQube
 	if len(portfolioReadResponse.Tags) > 0 {
-		d.Set("tags", portfolioReadResponse.Tags)
+		_ = d.Set("tags", portfolioReadResponse.Tags)
 	}
 	if len(portfolioReadResponse.Branch) > 0 {
-		d.Set("branch", portfolioReadResponse.Branch)
+		_ = d.Set("branch", portfolioReadResponse.Branch)
 	}
 	if len(portfolioReadResponse.Regexp) > 0 {
-		d.Set("regexp", portfolioReadResponse.Regexp)
+		_ = d.Set("regexp", portfolioReadResponse.Regexp)
 	}
 
 	if len(portfolioReadResponse.SelectedProjects) > 0 {
-		d.Set("selected_projects", flattenReadPortfolioSelectedProjectsResponse(&portfolioReadResponse.SelectedProjects))
+		_ = d.Set("selected_projects", flattenReadPortfolioSelectedProjectsResponse(&portfolioReadResponse.SelectedProjects))
 	}
 
 }
@@ -470,7 +470,7 @@ func readPortfolioFromApi(d *schema.ResourceData, m interface{}) (*Portfolio, er
 		}
 		return nil, fmt.Errorf("readPortfolioFromApi: Failed to call api/views/show: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	portfolioReadResponse := Portfolio{}
@@ -565,10 +565,10 @@ func addSelectedProject(portfolioKey, projectKey string, selectedBranches []stri
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	for _, branch := range selectedBranches {
-		addSelectedProjectBranch(portfolioKey, projectKey, branch, m)
+		_ = addSelectedProjectBranch(portfolioKey, projectKey, branch, m)
 	}
 
 	return nil
@@ -578,14 +578,14 @@ func updateSelectedProject(portfolioKey, projectKey string, selectedBranches, ap
 	// For each branch in the terraform schema, make sure they are also in SonarQube
 	for _, branch := range selectedBranches {
 		if !slices.Contains(apiSelectedBranches, branch) {
-			addSelectedProjectBranch(portfolioKey, projectKey, branch, m)
+			_ = addSelectedProjectBranch(portfolioKey, projectKey, branch, m)
 		}
 	}
 
 	// For each branch in SonarQube, ensure it exists in the terraform schema, otherwise remove it
 	for _, branch := range apiSelectedBranches {
 		if !slices.Contains(selectedBranches, branch) {
-			deleteSelectedProjectBranch(portfolioKey, projectKey, branch, m)
+			_ = deleteSelectedProjectBranch(portfolioKey, projectKey, branch, m)
 		}
 	}
 
@@ -612,7 +612,7 @@ func addSelectedProjectBranch(portfolioKey, projectKey, branch string, m interfa
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -637,7 +637,7 @@ func deleteSelectedProjectBranch(portfolioKey, projectKey, branch string, m inte
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
@@ -679,7 +679,7 @@ func deleteSelectedProject(portfolioKey, projectKey string, m interface{}) error
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

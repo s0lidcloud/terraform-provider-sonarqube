@@ -67,7 +67,14 @@ func resourceSonarqubeAzureBinding() *schema.Resource {
 	}
 }
 
+func checkAzureBindingSupport(conf *ProviderConfiguration) error {
+	return nil
+}
+
 func resourceSonarqubeAzureBindingCreate(d *schema.ResourceData, m interface{}) error {
+	if err := checkAzureBindingSupport(m.(*ProviderConfiguration)); err != nil {
+		return err
+	}
 	sonarQubeURL := m.(*ProviderConfiguration).sonarQubeURL
 	sonarQubeURL.Path = strings.TrimSuffix(sonarQubeURL.Path, "/") + "/api/alm_settings/set_azure_binding"
 
@@ -89,7 +96,7 @@ func resourceSonarqubeAzureBindingCreate(d *schema.ResourceData, m interface{}) 
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// id consists of "project/project_name/repository"
 	id := fmt.Sprintf("%v/%v/%v",
@@ -124,7 +131,7 @@ func resourceSonarqubeAzureBindingRead(d *schema.ResourceData, m interface{}) er
 		}
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	BindingReadResponse := GetAzureBinding{}
@@ -136,11 +143,11 @@ func resourceSonarqubeAzureBindingRead(d *schema.ResourceData, m interface{}) er
 	if idSlice[1] == BindingReadResponse.Slug &&
 		idSlice[2] == BindingReadResponse.Repository &&
 		BindingReadResponse.Alm == "azure" {
-		d.Set("project", idSlice[0])
-		d.Set("project_name", idSlice[1])
-		d.Set("repository_name", idSlice[2])
-		d.Set("alm_setting", BindingReadResponse.Key)
-		d.Set("monorepo", BindingReadResponse.Monorepo)
+		_ = d.Set("project", idSlice[0])
+		_ = d.Set("project_name", idSlice[1])
+		_ = d.Set("repository_name", idSlice[2])
+		_ = d.Set("alm_setting", BindingReadResponse.Key)
+		_ = d.Set("monorepo", BindingReadResponse.Monorepo)
 
 		return nil
 	}
@@ -166,7 +173,7 @@ func resourceSonarqubeAzureBindingDelete(d *schema.ResourceData, m interface{}) 
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

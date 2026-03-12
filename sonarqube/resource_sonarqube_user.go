@@ -106,7 +106,7 @@ func resourceSonarqubeUserCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return fmt.Errorf("error creating Sonarqube user: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	userResponse := CreateUserResponse{}
@@ -147,7 +147,7 @@ func resourceSonarqubeUserRead(d *schema.ResourceData, m interface{}) error {
 		}
 		return fmt.Errorf("error reading Sonarqube user: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	userResponse := GetUser{}
@@ -160,10 +160,10 @@ func resourceSonarqubeUserRead(d *schema.ResourceData, m interface{}) error {
 	for _, value := range userResponse.Users {
 		if d.Id() == value.Login {
 			d.SetId(value.Login)
-			d.Set("login_name", value.Login)
-			d.Set("name", value.Name)
-			d.Set("email", value.Email)
-			d.Set("is_local", value.IsLocal)
+			_ = d.Set("login_name", value.Login)
+			_ = d.Set("name", value.Name)
+			_ = d.Set("email", value.Email)
+			_ = d.Set("is_local", value.IsLocal)
 			return nil
 		}
 	}
@@ -193,7 +193,7 @@ func resourceSonarqubeUserUpdate(d *schema.ResourceData, m interface{}) error {
 		if err != nil {
 			return fmt.Errorf("error updating Sonarqube user: %+v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 	}
 
 	// handle password updates (api/users/change_password)
@@ -214,7 +214,7 @@ func resourceSonarqubeUserUpdate(d *schema.ResourceData, m interface{}) error {
 		if err != nil {
 			return fmt.Errorf("error updating Sonarqube user: %+v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 	}
 
 	return resourceSonarqubeUserRead(d, m)
@@ -238,7 +238,7 @@ func resourceSonarqubeUserDelete(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return fmt.Errorf("error deleting (deactivating) Sonarqube user: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }

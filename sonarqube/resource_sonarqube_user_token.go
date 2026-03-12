@@ -101,12 +101,13 @@ func resourceSonarqubeUserTokenCreate(d *schema.ResourceData, m interface{}) err
 		"type": []string{string(tokenType)},
 	}
 
-	if tokenType == UserToken {
+	switch tokenType {
+	case UserToken:
 		loginName := d.Get("login_name").(string)
 		if loginName != "" {
 			rawQuery.Add("login", loginName)
 		}
-	} else if tokenType == ProjectAnalysisToken {
+	case ProjectAnalysisToken:
 		projectKey := d.Get("project_key").(string)
 		if projectKey == "" {
 			return fmt.Errorf("resourceSonarqubeUserTokenCreate: 'project_key' must be configured when the token 'type' is %s", ProjectAnalysisToken)
@@ -130,7 +131,7 @@ func resourceSonarqubeUserTokenCreate(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return fmt.Errorf("error creating Sonarqube user token: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	tokenResponse := Token{}
@@ -144,7 +145,7 @@ func resourceSonarqubeUserTokenCreate(d *schema.ResourceData, m interface{}) err
 		d.SetId(fmt.Sprintf("%s/%s", d.Get("login_name").(string), d.Get("name").(string)))
 		// we set the token value here as the API wont return it later
 		if tokenResponse.Token != "" {
-			d.Set("token", tokenResponse.Token)
+			_ = d.Set("token", tokenResponse.Token)
 		} else {
 			return fmt.Errorf("resourceSonarqubeUserTokenCreate: Create response didn't contain the token")
 		}
@@ -181,7 +182,7 @@ func resourceSonarqubeUserTokenRead(d *schema.ResourceData, m interface{}) error
 		}
 		return fmt.Errorf("error reading Sonarqube user tokens: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Decode response into struct
 	getTokensResponse := GetTokens{}
@@ -195,14 +196,14 @@ func resourceSonarqubeUserTokenRead(d *schema.ResourceData, m interface{}) error
 		for _, value := range getTokensResponse.Tokens {
 			if d.Get("name").(string) == value.Name {
 				d.SetId(fmt.Sprintf("%s/%s", d.Get("login_name").(string), d.Get("name").(string)))
-				d.Set("login_name", getTokensResponse.Login)
-				d.Set("name", value.Name)
+				_ = d.Set("login_name", getTokensResponse.Login)
+				_ = d.Set("name", value.Name)
 				if value.ExpirationDate != "" {
 					dateReceived, errTimeParse := time.Parse("2006-01-02T15:04:05-0700", value.ExpirationDate)
 					if errTimeParse != nil {
 						return fmt.Errorf("resourceSonarqubeUserTokenCreate: Failed to parse ExpirationDate: %+v", err)
 					}
-					d.Set("expiration_date", dateReceived.Format("2006-01-02"))
+					_ = d.Set("expiration_date", dateReceived.Format("2006-01-02"))
 				}
 				return nil
 			}
@@ -236,7 +237,7 @@ func resourceSonarqubeUserTokenDelete(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return fmt.Errorf("error deleting Sonarqube user token: %+v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	return nil
 }
